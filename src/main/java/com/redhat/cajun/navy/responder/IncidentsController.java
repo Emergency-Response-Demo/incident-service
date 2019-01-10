@@ -12,8 +12,11 @@ public class IncidentsController {
 
         IncidentStats incidentStats = new IncidentStats();
 
-        incidentStats.setTotal(100);
-        incidentStats.setActive(50);
+        incidentStats.setCancelled(10);
+        incidentStats.setClaimed(20);
+        incidentStats.setPickedUp(30);
+        incidentStats.setRescued(40);
+        incidentStats.setRequested(50);
 
         return incidentStats;
     }
