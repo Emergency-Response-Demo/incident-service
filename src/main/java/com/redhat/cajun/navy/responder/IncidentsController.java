@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/responders")
+@RequestMapping("/incidents")
 public class IncidentsController {
 
     @RequestMapping("/map")
