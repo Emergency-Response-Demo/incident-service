@@ -27,9 +27,10 @@
         </profile>
     </profiles>
 ```
-* `mvn clean package`
+* `mvn clean package -Popenshift`
 
 ## Deploying to OpenShift
+1. Configure Maven to use Nexus as described above.
 2. `oc login`
 3. `oc project <your project>`
 4. `mvn clean package fabric8:deploy -D fabric8.namespace=naps-emergency-response -Popenshift`
