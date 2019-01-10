@@ -1,5 +1,7 @@
 package com.redhat.cajun.navy.responder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
@@ -11,6 +13,8 @@ public class Reporter {
     private String id;
     private String fullName;
     private String phoneNumber;
+
+    @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss.SSSZ")
     private ZonedDateTime reportTime;
 
     public String getId() {

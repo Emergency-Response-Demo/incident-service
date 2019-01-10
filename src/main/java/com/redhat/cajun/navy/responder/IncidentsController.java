@@ -26,7 +26,7 @@ public class IncidentsController {
         reporter1.setFullName("John Smith");
         reporter1.setPhoneNumber("703-999-8336");
         reporter1.setId("1");
-        //reporter1.setReportTime(ZonedDateTime.parse("2019-01-09T21:40:09.131Z"));
+        reporter1.setReportTime(ZonedDateTime.parse("2019-01-09T21:40:09.131Z"));
         incident1.setReporter(reporter1);
         incidents.add(incident1);
 
@@ -39,7 +39,7 @@ public class IncidentsController {
         reporter2.setFullName("John Smith");
         reporter2.setPhoneNumber("703-999-8336");
         reporter2.setId("2");
-        //reporter2.setReportTime(ZonedDateTime.parse("2019-01-09T21:50:09.131Z"));
+        reporter2.setReportTime(ZonedDateTime.parse("2019-01-09T21:50:09.131Z"));
         incident2.setReporter(reporter2);
         incidents.add(incident2);
 
