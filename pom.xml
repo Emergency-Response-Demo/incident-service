@@ -14,13 +14,18 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.fabric8-maven-plugin>3.5.39</version.fabric8-maven-plugin>
-
+        <version.jackson-datatype-jsr310>2.8.11.redhat-1</version.jackson-datatype-jsr310>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${version.jackson-datatype-jsr310}</version>
         </dependency>
     </dependencies>
 
@@ -56,7 +61,6 @@
                         <executions>
                             <execution>
                                 <id>fmp</id>
-                                <phase>package</phase>
                                 <goals>
                                     <goal>resource</goal>
                                     <goal>build</goal>
