@@ -2,7 +2,7 @@
 REST Service for the Incident Resource
 
 To Deploy this to Openshift:
-2. Change to OpenShift namespce to which you want to deploy using oc project.
+1. Change to OpenShift namespce to which you want to deploy using oc project.
 2. mvn clean package fabric8:deploy -Popenshift
 
 The maven command above will accomplish the following:
