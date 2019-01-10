@@ -14,7 +14,7 @@ public class Reporter {
     private String fullName;
     private String phoneNumber;
 
-    @JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss.SSSZ")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private ZonedDateTime reportTime;
 
     public String getId() {
