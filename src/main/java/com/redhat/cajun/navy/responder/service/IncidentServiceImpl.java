@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.sql.Timestamp;
 
 @Service
 public class IncidentServiceImpl implements IncidentService {
@@ -34,15 +38,13 @@ public class IncidentServiceImpl implements IncidentService {
         for (Map<String, Object> row : queryResults) {
             Incident incident = new Incident();
 
-            System.out.println(row);
-
             Reporter reporter = new Reporter();
             reporter.setId(
                     ((Integer) row.get("reporter_id")).toString()
             );
-//            reporter.setReportTime(
-//                    (ZonedDateTime) row.get("report_time")
-//            );
+            reporter.setReportTime(
+                    parseTime(row.get("report_time"))
+            );
             reporter.setPhoneNumber(
                     (String) row.get("reporter_phone_number")
             );
@@ -76,6 +78,13 @@ public class IncidentServiceImpl implements IncidentService {
     private BigDecimal parseCoordinate(Object coordinate) {
         Double doubleCoordinate = (Double) coordinate;
         BigDecimal result = new BigDecimal(doubleCoordinate);
+        return result;
+    }
+
+    private ZonedDateTime parseTime(Object time) {
+        Timestamp timestamp = (Timestamp) time;
+        Instant instant = timestamp.toInstant();
+        ZonedDateTime result = instant.atZone(ZoneId.of("Z"));
         return result;
     }
 
