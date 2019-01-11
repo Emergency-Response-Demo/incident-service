@@ -5,7 +5,7 @@ import java.util.Objects;
 public class IncidentStats {
 
     private long cancelled;
-    private long claimed;
+    private long assigned;
     private long pickedUp;
     private long rescued;
     private long requested;
@@ -18,12 +18,12 @@ public class IncidentStats {
         this.cancelled = cancelled;
     }
 
-    public long getClaimed() {
-        return claimed;
+    public long getAssigned() {
+        return assigned;
     }
 
-    public void setClaimed(long claimed) {
-        this.claimed = claimed;
+    public void setAssigned(long assigned) {
+        this.assigned = assigned;
     }
 
     public long getPickedUp() {
@@ -56,7 +56,7 @@ public class IncidentStats {
         if (o == null || getClass() != o.getClass()) return false;
         IncidentStats that = (IncidentStats) o;
         return cancelled == that.cancelled &&
-                claimed == that.claimed &&
+                assigned == that.assigned &&
                 pickedUp == that.pickedUp &&
                 rescued == that.rescued &&
                 requested == that.requested;
@@ -64,14 +64,14 @@ public class IncidentStats {
 
     @Override
     public int hashCode() {
-        return Objects.hash(cancelled, claimed, pickedUp, rescued, requested);
+        return Objects.hash(cancelled, assigned, pickedUp, rescued, requested);
     }
 
     @Override
     public String toString() {
         return "IncidentStats{" +
                 "cancelled=" + cancelled +
-                ", claimed=" + claimed +
+                ", assigned=" + assigned +
                 ", pickedUp=" + pickedUp +
                 ", rescued=" + rescued +
                 ", requested=" + requested +

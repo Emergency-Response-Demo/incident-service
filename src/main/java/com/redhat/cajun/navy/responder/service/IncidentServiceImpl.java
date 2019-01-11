@@ -28,19 +28,20 @@ public class IncidentServiceImpl implements IncidentService {
         List<Map<String, Object>> queryResults = jdbcTemplate.queryForList(sql);
         for (Map<String, Object> row : queryResults) {
             Long num_incidents = (Long) row.get("num_incidents");
-            if (row.get("current_stratus").equals("Rescued")) {
+
+            if (row.get("current_status").equals("Rescued")) {
                 stats.setRescued(num_incidents);
             }
-            if (row.get("current_stratus").equals("Requested")) {
+            if (row.get("current_status").equals("Requested")) {
                 stats.setRequested(num_incidents);
             }
-            if (row.get("current_stratus").equals("Pickedup")) {
+            if (row.get("current_status").equals("Pickedup")) {
                 stats.setPickedUp(num_incidents);
             }
-            if (row.get("current_stratus").equals("Claimed")) {
-                stats.setClaimed(num_incidents);
+            if (row.get("current_status").equals("Assigned")) {
+                stats.setAssigned(num_incidents);
             }
-            if (row.get("current_stratus").equals("Cancelled")) {
+            if (row.get("current_status").equals("Cancelled")) {
                 stats.setCancelled(num_incidents);
             }
         }
