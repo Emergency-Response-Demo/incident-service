@@ -55,7 +55,7 @@ public class IncidentServiceImpl implements IncidentService {
                     (Integer) row.get("number_of_people")
             );
             incident.setId(
-                    (String) row.get("incident_id ")
+                    ((Integer) row.get("incident_id")).toString()
             );
             incident.setLat(
                     parseCoordinate(row.get("gps_lat"))
