@@ -1,5 +1,7 @@
 package com.redhat.cajun.navy.responder;
 
+import com.redhat.cajun.navy.responder.service.IncidentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/incidents")
 public class IncidentsController {
+
+    @Autowired
+    private IncidentService incidentService;
 
     @RequestMapping("/map")
     public List<Incident> map() {
@@ -30,7 +35,7 @@ public class IncidentsController {
         incident1.setReporter(reporter1);
         incidents.add(incident1);
 
-         Incident incident2 = new Incident();
+        Incident incident2 = new Incident();
         incident2.setId("2");
         incident2.setLat(new BigDecimal("34.18323"));
         incident2.setLon(new BigDecimal("-77.84099"));
@@ -49,15 +54,9 @@ public class IncidentsController {
     @RequestMapping("/stats")
     public IncidentStats stats() {
 
-        IncidentStats incidentStats = new IncidentStats();
+        IncidentStats response = incidentService.getIncidentStats();
 
-        incidentStats.setCancelled(10);
-        incidentStats.setClaimed(20);
-        incidentStats.setPickedUp(30);
-        incidentStats.setRescued(40);
-        incidentStats.setRequested(50);
-
-        return incidentStats;
+        return response;
     }
 
 }

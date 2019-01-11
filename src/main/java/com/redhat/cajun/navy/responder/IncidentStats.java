@@ -4,49 +4,49 @@ import java.util.Objects;
 
 public class IncidentStats {
 
-    private int cancelled;
-    private int claimed;
-    private int pickedUp;
-    private int rescued;
-    private int requested;
+    private long cancelled;
+    private long claimed;
+    private long pickedUp;
+    private long rescued;
+    private long requested;
 
-    public int getCancelled() {
+    public long getCancelled() {
         return cancelled;
     }
 
-    public void setCancelled(int cancelled) {
+    public void setCancelled(long cancelled) {
         this.cancelled = cancelled;
     }
 
-    public int getClaimed() {
+    public long getClaimed() {
         return claimed;
     }
 
-    public void setClaimed(int claimed) {
+    public void setClaimed(long claimed) {
         this.claimed = claimed;
     }
 
-    public int getPickedUp() {
+    public long getPickedUp() {
         return pickedUp;
     }
 
-    public void setPickedUp(int pickedUp) {
+    public void setPickedUp(long pickedUp) {
         this.pickedUp = pickedUp;
     }
 
-    public int getRescued() {
+    public long getRescued() {
         return rescued;
     }
 
-    public void setRescued(int rescued) {
+    public void setRescued(long rescued) {
         this.rescued = rescued;
     }
 
-    public int getRequested() {
+    public long getRequested() {
         return requested;
     }
 
-    public void setRequested(int requested) {
+    public void setRequested(long requested) {
         this.requested = requested;
     }
 

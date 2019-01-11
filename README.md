@@ -45,3 +45,49 @@ The maven command above will do the following:
   
 3. The fabric8 plugin will start an OpenShift Build using the BuildController. 
 4. The Build will push to the ImageStream, which will trigger the DeploymentController will trigger to deploy a Pod running the code.
+
+## Configuration
+
+This service pulls its Spring Boot configuration from an OpenShift ConfigMap.
+
+The spring-cloud-starter-cubernetes-config library reads the ConfigMap and makes it available to Spring Boot. The library is specified like this in pom.xml:
+```
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-config</artifactId>
+        </dependency>
+```
+
+The name of the ConfigMap must match the value of the spring.application.name property defined in application.properties. Its content looks similar to the example below. The example also shows how to configure the database connection info:
+
+```
+apiVersion: v1
+kind: ConfigMap
+data:
+  application.properties: |-
+    ---
+
+    spring.datasource.url=jdbc:postgresql://postgresql.naps-emergency-response.svc:5432/naps_emergency_response
+    spring.datasource.username=naps
+    spring.datasource.password=naps
+metadata:
+    name: incident-service
+```
+
+### Configuration When Running Locally
+
+By default, spring-cloud-starter-kubernetes-config will attempt to pull in configuration from the OpenShift ConfigMap even when the 
+application is run on a development machine outside of the OpenShift cluster. It will use any active `oc login` 
+session to pull the values out of the cluster.
+
+To disable that behavior and run with a locally defined configuration,
+1. Create a local version of application.properties with the required properties (see the example above or the Ansible scripts that set up the real cluster).
+2. Start the application like this:
+
+```$xslt
+java -jar target/responder-service-0.0.1-SNAPSHOT.jar --spring.config.location=file:./etc/application-local.properties --spring.cloud.bootstrap.location=file:./src/test/resources/bootstrap.properties
+```
+
+The command above references a boostrap config file (bootstrap.properties), which is already provided under src/test/resources. The bootstrap configuration is read before the regular configuration and disables the ConfigMap behavior by setting `spring.cloud.kubernetes.config.enabled=false`.
+
+... or you could just run in OpenShift. :)
