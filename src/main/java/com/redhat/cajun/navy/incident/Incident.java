@@ -11,6 +11,7 @@ public class Incident {
     private BigDecimal lon;
     private int numberOfPeople;
     private boolean isMedicalNeeded;
+    private String missionStatus;
 
     public String getId() {
         return id;
@@ -60,6 +61,14 @@ public class Incident {
         isMedicalNeeded = medicalNeeded;
     }
 
+    public String getMissionStatus() {
+        return missionStatus;
+    }
+
+    public void setMissionStatus(String missionStatus) {
+        this.missionStatus = missionStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,12 +79,13 @@ public class Incident {
                 Objects.equals(id, incident.id) &&
                 Objects.equals(reporter, incident.reporter) &&
                 Objects.equals(lat, incident.lat) &&
-                Objects.equals(lon, incident.lon);
+                Objects.equals(lon, incident.lon) &&
+                Objects.equals(missionStatus, incident.missionStatus);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, reporter, lat, lon, numberOfPeople, isMedicalNeeded);
+        return Objects.hash(id, reporter, lat, lon, numberOfPeople, isMedicalNeeded, missionStatus);
     }
 
     @Override
@@ -87,6 +97,7 @@ public class Incident {
                 ", lon=" + lon +
                 ", numberOfPeople=" + numberOfPeople +
                 ", isMedicalNeeded=" + isMedicalNeeded +
+                ", missionStatus='" + missionStatus + '\'' +
                 '}';
     }
 }

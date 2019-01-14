@@ -30,12 +30,13 @@ public class IncidentServiceImpl implements IncidentService {
 
         jdbcTemplate = new JdbcTemplate(datasource);
 
-        String sql = "SELECT * FROM incident JOIN reporter ON reporter.reporter_id = incident.report_id";
+        String sql = "SELECT * FROM incident JOIN reporter ON reporter.reporter_id = incident.report_id join mission on incident.incident_id = mission.incident_id";
 
         LinkedList<Incident> incidents = new LinkedList<>();
 
         List<Map<String, Object>> queryResults = jdbcTemplate.queryForList(sql);
         for (Map<String, Object> row : queryResults) {
+
             Incident incident = new Incident();
 
             Reporter reporter = new Reporter();
@@ -67,6 +68,9 @@ public class IncidentServiceImpl implements IncidentService {
             );
             incident.setMedicalNeeded(
                     (Boolean) row.get("medical_need")
+            );
+            incident.setMissionStatus(
+                    (String) row.get("current_status")
             );
 
             incidents.add(incident);
