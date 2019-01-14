@@ -1,4 +1,4 @@
-package com.redhat.cajun.navy.responder;
+package com.redhat.cajun.navy.incident;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

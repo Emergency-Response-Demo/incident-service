@@ -1,13 +1,10 @@
-package com.redhat.cajun.navy.responder;
+package com.redhat.cajun.navy.incident;
 
-import com.redhat.cajun.navy.responder.service.IncidentService;
+import com.redhat.cajun.navy.incident.service.IncidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

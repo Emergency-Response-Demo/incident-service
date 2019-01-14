@@ -1,4 +1,4 @@
-package com.redhat.cajun.navy.responder;
+package com.redhat.cajun.navy.incident;
 
 import java.math.BigDecimal;
 import java.util.Objects;

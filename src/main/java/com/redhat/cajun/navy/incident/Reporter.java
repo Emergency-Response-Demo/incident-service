@@ -1,4 +1,4 @@
-package com.redhat.cajun.navy.responder;
+package com.redhat.cajun.navy.incident;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

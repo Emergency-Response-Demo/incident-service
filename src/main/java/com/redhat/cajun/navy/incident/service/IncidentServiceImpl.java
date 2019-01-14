@@ -1,8 +1,8 @@
-package com.redhat.cajun.navy.responder.service;
+package com.redhat.cajun.navy.incident.service;
 
-import com.redhat.cajun.navy.responder.Incident;
-import com.redhat.cajun.navy.responder.IncidentStats;
-import com.redhat.cajun.navy.responder.Reporter;
+import com.redhat.cajun.navy.incident.Incident;
+import com.redhat.cajun.navy.incident.IncidentStats;
+import com.redhat.cajun.navy.incident.Reporter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
