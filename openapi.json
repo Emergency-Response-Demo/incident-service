@@ -1,0 +1,193 @@
+{
+  "openapi" : "3.0.2",
+  "info" : {
+    "title" : "Incident",
+    "version" : "1.0.0"
+  },
+  "paths" : {
+    "/incidents" : {
+      "summary" : "Path used to manage the list of Incidents.",
+      "description" : "The REST endpoint/path used to list and create zero or more `Incident` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+      "get" : {
+        "summary" : "List All Incidents",
+        "description" : "Gets a list of all `Incident` entities.",
+        "operationId" : "getIncidents",
+        "responses" : {
+          "200" : {
+            "description" : "Successful response - returns an array of `Incident` entities.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Incident"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a Incident",
+        "description" : "Creates a new instance of a `Incident`.",
+        "operationId" : "createIncident",
+        "requestBody" : {
+          "description" : "A new `Incident` to be created.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Incident"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Successful response."
+          }
+        }
+      }
+    },
+    "/incidents/{incidentId}" : {
+      "summary" : "Path used to manage a single Incident.",
+      "description" : "The REST endpoint/path used to get, update, and delete single instances of an `Incident`.  This path contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
+      "get" : {
+        "summary" : "Get a Incident",
+        "description" : "Gets the details of a single instance of a `Incident`.",
+        "operationId" : "getIncident",
+        "parameters" : [ {
+          "name" : "incidentId",
+          "in" : "path",
+          "description" : "A unique identifier for a `Incident`.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful response - returns a single `Incident`.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Incident"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Returns an `Error` response.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a Incident",
+        "description" : "Updates an existing `Incident`.",
+        "operationId" : "updateIncident",
+        "parameters" : [ {
+          "name" : "incidentId",
+          "in" : "path",
+          "description" : "A unique identifier for a `Incident`.",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "Updated `Incident` information.",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Incident"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Successful response."
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Delete a Incident",
+        "description" : "Deletes an existing `Incident`.",
+        "operationId" : "deleteIncident",
+        "responses" : {
+          "204" : {
+            "description" : "Successful response."
+          }
+        }
+      },
+      "parameters" : [ {
+        "name" : "incidentId",
+        "in" : "path",
+        "description" : "A unique identifier for a `Incident`.",
+        "required" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      } ]
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Incident" : {
+        "required" : [ "lat", "long", "numberOfPeople", "isMedicalNeeded", "victimName", "victimPhoneNumber", "id", "timestamp" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "lat" : {
+            "type" : "string"
+          },
+          "long" : {
+            "type" : "string"
+          },
+          "numberOfPeople" : {
+            "type" : "integer"
+          },
+          "isMedicalNeeded" : {
+            "type" : "boolean"
+          },
+          "victimName" : {
+            "description" : "Victim's full name",
+            "type" : "string"
+          },
+          "victimPhoneNumber" : {
+            "type" : "string"
+          },
+          "status" : {
+            "enum" : [ "REQUESTED", "ASSIGNED", "COMPLETED" ]
+          },
+          "timestamp" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "Error" : {
+        "required" : [ "code", "message" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "integer"
+          },
+          "message" : {
+            "type" : "string"
+          }
+        }
+      }
+    }
+  }
+}
