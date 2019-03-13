@@ -80,7 +80,11 @@
           "500" : {
             "description" : "Returns an `Error` response.",
             "content" : {
-              "application/json" : { }
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -139,7 +143,7 @@
   "components" : {
     "schemas" : {
       "Incident" : {
-        "required" : [ "lat", "long", "numberOfPeople", "isMedicalNeeded", "victimName", "victimPhoneNumber", "id" ],
+        "required" : [ "lat", "long", "numberOfPeople", "isMedicalNeeded", "victimName", "victimPhoneNumber", "id", "timestamp" ],
         "type" : "object",
         "properties" : {
           "id" : {
@@ -166,6 +170,9 @@
           },
           "status" : {
             "enum" : [ "REQUESTED", "ASSIGNED", "COMPLETED" ]
+          },
+          "timestamp" : {
+            "type" : "integer"
           }
         }
       },
