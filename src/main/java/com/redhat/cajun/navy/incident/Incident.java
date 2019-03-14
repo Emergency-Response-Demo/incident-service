@@ -90,7 +90,7 @@ public class Incident {
 
     @Override
     public String toString() {
-        return "Incident{" +
+        return "ReportedIncident{" +
                 "id='" + id + '\'' +
                 ", reporter=" + reporter +
                 ", lat=" + lat +

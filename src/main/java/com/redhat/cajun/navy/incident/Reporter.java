@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
- * The person who reported an Incident
+ * The person who reported an ReportedIncident
  */
 public class Reporter {
 
