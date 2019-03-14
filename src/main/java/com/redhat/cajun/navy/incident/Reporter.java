@@ -1,8 +1,5 @@
 package com.redhat.cajun.navy.incident;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,8 +11,7 @@ public class Reporter {
     private String fullName;
     private String phoneNumber;
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-    private ZonedDateTime reportTime;
+    private long reportTime;
 
     public String getId() {
         return id;
@@ -41,11 +37,11 @@ public class Reporter {
         this.phoneNumber = phoneNumber;
     }
 
-    public ZonedDateTime getReportTime() {
+    public long getReportTime() {
         return reportTime;
     }
 
-    public void setReportTime(ZonedDateTime reportTime) {
+    public void setReportTime(long reportTime) {
         this.reportTime = reportTime;
     }
 

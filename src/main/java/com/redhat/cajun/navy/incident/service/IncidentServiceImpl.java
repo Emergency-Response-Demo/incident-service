@@ -1,21 +1,21 @@
 package com.redhat.cajun.navy.incident.service;
 
-import com.redhat.cajun.navy.incident.Incident;
-import com.redhat.cajun.navy.incident.IncidentStats;
-import com.redhat.cajun.navy.incident.Reporter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-
-import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.sql.Timestamp;
+import javax.sql.DataSource;
+
+import com.redhat.cajun.navy.incident.Incident;
+import com.redhat.cajun.navy.incident.IncidentStats;
+import com.redhat.cajun.navy.incident.Reporter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 
 @Service
 public class IncidentServiceImpl implements IncidentService {
@@ -85,11 +85,10 @@ public class IncidentServiceImpl implements IncidentService {
         return result;
     }
 
-    private ZonedDateTime parseTime(Object time) {
+    private long parseTime(Object time) {
         Timestamp timestamp = (Timestamp) time;
         Instant instant = timestamp.toInstant();
-        ZonedDateTime result = instant.atZone(ZoneId.of("Z"));
-        return result;
+        return instant.toEpochMilli();
     }
 
     @Override
