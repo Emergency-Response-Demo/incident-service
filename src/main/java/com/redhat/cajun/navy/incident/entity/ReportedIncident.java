@@ -1,7 +1,9 @@
 package com.redhat.cajun.navy.incident.entity;
 
+import java.time.Instant;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,8 +43,9 @@ public class ReportedIncident {
     @Column(name = "victim_phone")
     private String victimPhoneNumber;
 
-    @Column(name = "reported_timestamp")
-    private long timestamp;
+    @Basic
+    @Column(name = "reported_time")
+    private Instant reportedTime;
 
     @Column(name = "incident_status")
     private String status;
@@ -80,7 +83,11 @@ public class ReportedIncident {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return reportedTime.toEpochMilli();
+    }
+
+    public Instant getReportedTime() {
+        return reportedTime;
     }
 
     public String getStatus() {
@@ -130,8 +137,8 @@ public class ReportedIncident {
             return this;
         }
 
-        public Builder timestamp(long timestamp) {
-            reportedIncident.timestamp = timestamp;
+        public Builder reportedTime(long timestamp) {
+            reportedIncident.reportedTime = Instant.ofEpochMilli(timestamp);
             return this;
         }
 

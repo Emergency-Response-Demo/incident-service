@@ -48,7 +48,7 @@ public class ReportedIncidentServiceImpl implements ReportedIncidentService {
                         .numberOfPeople(incident.getNumberOfPeople())
                         .victimName(incident.getVictimName())
                         .victimPhoneNumber(incident.getVictimPhoneNumber())
-                        .timestamp(reportedTimestamp)
+                        .reportedTime(reportedTimestamp)
                         .status(IncidentStatus.REPORTED.name())
                         .build();
 

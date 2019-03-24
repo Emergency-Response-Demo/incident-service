@@ -64,7 +64,7 @@ public class DaoTest {
                 .victimName("John Doe")
                 .victimPhoneNumber("123-456-789")
                 .status("Reported")
-                .timestamp(System.currentTimeMillis())
+                .reportedTime(System.currentTimeMillis())
                 .build();
 
         reportedIncidentDao.create(reportedIncident);
