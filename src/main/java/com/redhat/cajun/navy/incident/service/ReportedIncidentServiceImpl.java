@@ -37,6 +37,7 @@ public class ReportedIncidentServiceImpl implements ReportedIncidentService {
     public void sendIncidentReportedEventMessage(ReportedIncident incident) {
 
         String reportedIncidentId = UUID.randomUUID().toString();
+        long reportedTimestamp = System.currentTimeMillis();
 
         com.redhat.cajun.navy.incident.entity.ReportedIncident reportedIncidentEntity =
                 new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder()
@@ -47,7 +48,7 @@ public class ReportedIncidentServiceImpl implements ReportedIncidentService {
                         .numberOfPeople(incident.getNumberOfPeople())
                         .victimName(incident.getVictimName())
                         .victimPhoneNumber(incident.getVictimPhoneNumber())
-                        .timestamp(incident.getTimestamp())
+                        .timestamp(reportedTimestamp)
                         .status(IncidentStatus.REPORTED.name())
                         .build();
 
@@ -59,7 +60,7 @@ public class ReportedIncidentServiceImpl implements ReportedIncidentService {
                         .lon(new BigDecimal(incident.getLon()))
                         .medicalNeeded(incident.isMedicalNeeded())
                         .numberOfPeople(incident.getNumberOfPeople())
-                        .timestamp(incident.getTimestamp())
+                        .timestamp(reportedTimestamp)
                         .build())
                 .build();
 

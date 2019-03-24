@@ -2,6 +2,7 @@ package com.redhat.cajun.navy.incident.service;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
@@ -47,7 +48,7 @@ public class IncidentsControllerIT {
     private ReportedIncidentDao reportedIncidentDao;
 
     @Captor
-    private ArgumentCaptor<Message> messageCaptor;
+    private ArgumentCaptor<Message<IncidentReportedEvent>> messageCaptor;
 
     @Captor
     private ArgumentCaptor<String> destination;
@@ -71,9 +72,7 @@ public class IncidentsControllerIT {
                 "\"numberOfPeople\": 3," +
                 "\"medicalNeeded\": true," +
                 "\"victimName\": \"victim\"," +
-                "\"victimPhoneNumber\": \"111-111-111\"," +
-                "\"timestamp\": 1234567890," +
-                "\"status\": \"REQUESTED\"" +
+                "\"victimPhoneNumber\": \"111-111-111\"" +
                 "}";
 
         Response response = given().header(new Header("Content-type", "application/json"))
@@ -93,7 +92,7 @@ public class IncidentsControllerIT {
         assertThat(event.getLon(), equalTo(new BigDecimal("-77.86569")));
         assertThat(event.getNumberOfPeople(), equalTo(3));
         assertThat(event.isMedicalNeeded(), equalTo(true));
-        assertThat(event.getTimestamp(), equalTo(1234567890L));
+        assertThat(event.getTimestamp() <= System.currentTimeMillis(), is(true));
 
         ReportedIncident reportedIncidentEntity = reportedIncidentDao.findByIncidentId(key.getValue());
         assertThat(reportedIncidentEntity, notNullValue());

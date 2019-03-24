@@ -1,6 +1,7 @@
 package com.redhat.cajun.navy.incident.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
@@ -65,7 +66,6 @@ public class ReportedIncidentServiceTest {
                 .medicalNeeded(false)
                 .victimName("John Doe")
                 .victimPhoneNumber("123-456-789")
-                .timestamp(System.currentTimeMillis())
                 .build();
 
         service.sendIncidentReportedEventMessage(incident);
@@ -80,7 +80,7 @@ public class ReportedIncidentServiceTest {
         assertThat(entity.isMedicalNeeded(), equalTo(incident.isMedicalNeeded()));
         assertThat(entity.getVictimName(), equalTo(incident.getVictimName()));
         assertThat(entity.getVictimPhoneNumber(), equalTo(incident.getVictimPhoneNumber()));
-        assertThat(entity.getTimestamp(), equalTo(incident.getTimestamp()));
+        assertThat(entity.getTimestamp() <= System.currentTimeMillis(), is(true));
         assertThat(entity.getStatus(), equalTo(IncidentStatus.REPORTED.name()));
 
         verify(kafkaTemplate).send(eq("test-topic"), eq(incidentId), messageCaptor.capture());
@@ -95,7 +95,7 @@ public class ReportedIncidentServiceTest {
         assertThat(event.getLon(), equalTo(new BigDecimal(incident.getLon())));
         assertThat(event.getNumberOfPeople(), equalTo(incident.getNumberOfPeople()));
         assertThat(event.isMedicalNeeded(), equalTo(incident.isMedicalNeeded()));
-        assertThat(event.getTimestamp(), equalTo(incident.getTimestamp()));
+        assertThat(event.getTimestamp(), equalTo(entity.getTimestamp()));
     }
 
 }
