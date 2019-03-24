@@ -17,4 +17,5 @@ public class ConfigurationTests {
     public KafkaTemplate<String, Message<?>> kafkaTemplate() {
         return Mockito.mock(KafkaTemplate.class);
     }
+
 }

@@ -55,4 +55,53 @@ public class ReportedIncident {
     public String getStatus() {
         return status;
     }
+
+    public static class Builder {
+
+        private final ReportedIncident incident;
+
+        public Builder() {
+            incident = new ReportedIncident();
+        }
+
+        public Builder lat(String lat) {
+            incident.lat = lat;
+            return this;
+        }
+
+        public Builder lon(String lon) {
+            incident.lon = lon;
+            return this;
+        }
+
+        public Builder numberOfPeople(int numberOfPeople) {
+            incident.numberOfPeople = numberOfPeople;
+            return this;
+        }
+
+        public Builder medicalNeeded(boolean medicalNeeded) {
+            incident.medicalNeeded = medicalNeeded;
+            return this;
+        }
+
+        public Builder victimName(String victimName) {
+            incident.victimName = victimName;
+            return this;
+        }
+
+        public Builder victimPhoneNumber(String victimPhoneNumber) {
+            incident.victimPhoneNumber = victimPhoneNumber;
+            return this;
+        }
+
+        public Builder timestamp(long timestamp) {
+            incident.timestamp = timestamp;
+            return this;
+        }
+
+        public ReportedIncident build() {
+            return incident;
+        }
+
+    }
 }

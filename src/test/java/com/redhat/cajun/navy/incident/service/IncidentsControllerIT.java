@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 
+import com.redhat.cajun.navy.incident.dao.ReportedIncidentDao;
+import com.redhat.cajun.navy.incident.entity.ReportedIncident;
 import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
 import com.redhat.cajun.navy.incident.message.Message;
 import io.restassured.RestAssured;
@@ -40,6 +42,9 @@ public class IncidentsControllerIT {
 
     @Autowired
     private KafkaTemplate<String, Message<?>> kafkaTemplate;
+
+    @Autowired
+    private ReportedIncidentDao reportedIncidentDao;
 
     @Captor
     private ArgumentCaptor<Message> messageCaptor;
@@ -89,5 +94,8 @@ public class IncidentsControllerIT {
         assertThat(event.getNumberOfPeople(), equalTo(3));
         assertThat(event.isMedicalNeeded(), equalTo(true));
         assertThat(event.getTimestamp(), equalTo(1234567890L));
+
+        ReportedIncident reportedIncidentEntity = reportedIncidentDao.findByIncidentId(key.getValue());
+        assertThat(reportedIncidentEntity, notNullValue());
     }
 }
