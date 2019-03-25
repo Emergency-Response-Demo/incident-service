@@ -13,20 +13,19 @@
     <skipITs>${skipTests}</skipITs>
     <skipUTs>${skipTests}</skipUTs>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <version.spring-boot>1.5.17.RELEASE</version.spring-boot>
+    <version.spring-boot>1.5.17.SP1-redhat-00002</version.spring-boot>
+    <version.spring-boot-maven-plugin>1.5.17.RELEASE</version.spring-boot-maven-plugin>
     <version.fabric8-maven-plugin>3.5.39</version.fabric8-maven-plugin>
     <version.jackson-datatype-jsr310>2.8.11.redhat-1</version.jackson-datatype-jsr310>
     <version.hibernate>5.3.7.Final-redhat-00001</version.hibernate>
-    <version.spring-cloud-kubernetes>0.2.0.RELEASE</version.spring-cloud-kubernetes>
-    <version.narayana-spring-boot-starter>1.0.1</version.narayana-spring-boot-starter>
     <version.logback>1.2.3</version.logback>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
+        <groupId>me.snowdrop</groupId>
+        <artifactId>spring-boot-bom</artifactId>
         <version>${version.spring-boot}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -62,7 +61,6 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-kubernetes-config</artifactId>
-      <version>${version.spring-cloud-kubernetes}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -99,7 +97,6 @@
     <dependency>
       <groupId>me.snowdrop</groupId>
       <artifactId>narayana-spring-boot-starter</artifactId>
-      <version>${version.narayana-spring-boot-starter}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -128,7 +125,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${version.spring-boot}</version>
+        <version>${version.spring-boot-maven-plugin}</version>
         <executions>
           <execution>
             <goals>
