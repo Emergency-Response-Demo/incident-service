@@ -1,7 +1,8 @@
 package com.redhat.cajun.navy.incident.service;
 
+import static org.mockito.Mockito.mock;
+
 import com.redhat.cajun.navy.incident.message.Message;
-import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -13,9 +14,10 @@ import org.springframework.kafka.core.KafkaTemplate;
 public class ConfigurationTests {
 
     @Primary
+    @SuppressWarnings("unchecked")
     @Bean(name = "kafkaTemplate")
     public KafkaTemplate<String, Message<?>> kafkaTemplate() {
-        return Mockito.mock(KafkaTemplate.class);
+        return mock(KafkaTemplate.class);
     }
 
 }

@@ -11,21 +11,16 @@ import com.redhat.cajun.navy.incident.entity.ReportedIncident;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
-import org.springframework.boot.autoconfigure.transaction.jta.NarayanaJtaConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = {ReportedIncident.class, ReportedIncidentDao.class, JpaProperties.class, NarayanaJtaConfiguration.class,
-        HibernateJpaAutoConfiguration.class, DataSourceAutoConfiguration.class})
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ReportedIncidentDao.class))
 public class DaoTest {
 
     @Autowired
