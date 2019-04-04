@@ -4,9 +4,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -42,13 +42,13 @@ public class ReportedIncidentServiceTest {
     @Captor
     private ArgumentCaptor<Message<IncidentReportedEvent>> messageCaptor;
 
-    private ReportedIncidentServiceImpl service;
+    private ReportedIncidentService service;
 
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
         initMocks(this);
-        service = new ReportedIncidentServiceImpl();
+        service = new ReportedIncidentService();
         setField(service, null, kafkaTemplate, KafkaTemplate.class);
         setField(service, null, reportedIncidentDao, ReportedIncidentDao.class);
         setField(service, "destination", "test-topic", String.class);
@@ -96,6 +96,57 @@ public class ReportedIncidentServiceTest {
         assertThat(event.getNumberOfPeople(), equalTo(incident.getNumberOfPeople()));
         assertThat(event.isMedicalNeeded(), equalTo(incident.isMedicalNeeded()));
         assertThat(event.getTimestamp(), equalTo(entity.getTimestamp()));
+    }
+
+    @Test
+    public void testUpdateIncident() {
+
+        ReportedIncident toUpdate = new ReportedIncident.Builder("testId").status(IncidentStatus.PICKEDUP.name()).build();
+
+        com.redhat.cajun.navy.incident.entity.ReportedIncident current = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L)
+                .incidentId("testId")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.REPORTED.name())
+                .build();
+
+        com.redhat.cajun.navy.incident.entity.ReportedIncident updated = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L)
+                .incidentId("testId")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.PICKEDUP.name())
+                .build();
+
+        when(reportedIncidentDao.findByIncidentId(any(String.class))).thenReturn(current);
+        when(reportedIncidentDao.merge(any(com.redhat.cajun.navy.incident.entity.ReportedIncident.class))).thenReturn(updated);
+
+        service.updateIncident(toUpdate);
+
+        verify(reportedIncidentDao).findByIncidentId(eq("testId"));
+        verify(reportedIncidentDao).merge(entityCaptor.capture());
+        com.redhat.cajun.navy.incident.entity.ReportedIncident entity = entityCaptor.getValue();
+        assertThat(entity, notNullValue());
+        assertThat(entity.getId(), equalTo(1L));
+        assertThat(entity.getIncidentId(), equalTo("testId"));
+        assertThat(entity.getLatitude(), equalTo("30.12345"));
+        assertThat(entity.getLongitude(), equalTo("-77.98765"));
+        assertThat(entity.getVictimName(), equalTo("John Doe"));
+        assertThat(entity.getVictimPhoneNumber(), equalTo("111-222-333"));
+        assertThat(entity.getNumberOfPeople(), equalTo(2));
+        assertThat(entity.isMedicalNeeded(), equalTo(true));
+        assertThat(entity.getReportedTime(), equalTo(current.getReportedTime()));
+        assertThat(entity.getStatus(), equalTo("PICKEDUP"));
+
     }
 
 }

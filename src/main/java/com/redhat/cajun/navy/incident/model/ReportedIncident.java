@@ -8,9 +8,9 @@ public class ReportedIncident {
 
     private String lon;
 
-    private int numberOfPeople;
+    private Integer numberOfPeople;
 
-    private boolean medicalNeeded;
+    private Boolean medicalNeeded;
 
     private String victimName;
 
@@ -32,11 +32,11 @@ public class ReportedIncident {
         return lon;
     }
 
-    public int getNumberOfPeople() {
+    public Integer getNumberOfPeople() {
         return numberOfPeople;
     }
 
-    public boolean isMedicalNeeded() {
+    public Boolean isMedicalNeeded() {
         return medicalNeeded;
     }
 
@@ -64,6 +64,11 @@ public class ReportedIncident {
             incident = new ReportedIncident();
         }
 
+        public Builder(String id) {
+            incident = new ReportedIncident();
+            incident.id = id;
+        }
+
         public Builder lat(String lat) {
             incident.lat = lat;
             return this;
@@ -74,12 +79,12 @@ public class ReportedIncident {
             return this;
         }
 
-        public Builder numberOfPeople(int numberOfPeople) {
+        public Builder numberOfPeople(Integer numberOfPeople) {
             incident.numberOfPeople = numberOfPeople;
             return this;
         }
 
-        public Builder medicalNeeded(boolean medicalNeeded) {
+        public Builder medicalNeeded(Boolean medicalNeeded) {
             incident.medicalNeeded = medicalNeeded;
             return this;
         }
@@ -96,6 +101,11 @@ public class ReportedIncident {
 
         public Builder timestamp(long timestamp) {
             incident.timestamp = timestamp;
+            return this;
+        }
+
+        public Builder status(String status) {
+            incident.status = status;
             return this;
         }
 

@@ -11,11 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 @Entity
 @Access(AccessType.FIELD)
 @SequenceGenerator(name="ReportedIncidentSeq", sequenceName="REPORTED_INCIDENT_SEQ")
-@Table(name = "ReportedIncident")
+@Table(name = "reported_incident")
 public class ReportedIncident {
 
     @Id
@@ -50,6 +51,10 @@ public class ReportedIncident {
     @Column(name = "incident_status")
     private String status;
 
+    @Column(name = "version")
+    @Version
+    private long version;
+
     public long getId() {
         return id;
     }
@@ -66,11 +71,11 @@ public class ReportedIncident {
         return longitude;
     }
 
-    public int getNumberOfPeople() {
+    public Integer getNumberOfPeople() {
         return numberOfPeople;
     }
 
-    public boolean isMedicalNeeded() {
+    public Boolean isMedicalNeeded() {
         return medicalNeeded;
     }
 
@@ -94,12 +99,21 @@ public class ReportedIncident {
         return status;
     }
 
+    public long getVersion() {
+        return version;
+    }
+
     public static class Builder {
 
         private final ReportedIncident reportedIncident;
 
         public Builder() {
             reportedIncident = new ReportedIncident();
+        }
+
+        public Builder(long id) {
+            reportedIncident = new ReportedIncident();
+            reportedIncident.id = id;
         }
 
         public Builder incidentId(String incidentId) {
@@ -117,12 +131,12 @@ public class ReportedIncident {
             return this;
         }
 
-        public Builder numberOfPeople(int numberOfPeople) {
+        public Builder numberOfPeople(Integer numberOfPeople) {
             reportedIncident.numberOfPeople = numberOfPeople;
             return this;
         }
 
-        public Builder medicalNeeded(boolean medicalNeeded) {
+        public Builder medicalNeeded(Boolean medicalNeeded) {
             reportedIncident.medicalNeeded = medicalNeeded;
             return this;
         }

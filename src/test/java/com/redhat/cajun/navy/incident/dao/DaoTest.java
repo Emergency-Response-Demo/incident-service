@@ -8,6 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.UUID;
 
 import com.redhat.cajun.navy.incident.entity.ReportedIncident;
+import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
@@ -26,11 +30,16 @@ public class DaoTest {
     @Autowired
     private ReportedIncidentDao reportedIncidentDao;
 
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    public void init() {
+      reportedIncidentDao.deleteAll();
+    }
+
     @Test
     @Transactional
     public void testSaveReportedIncident() {
-        assertThat(reportedIncidentDao, notNullValue());
-
         ReportedIncident reportedIncident= new ReportedIncident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("30.12345")
@@ -68,7 +77,56 @@ public class DaoTest {
         assertThat(found, notNullValue());
         assertThat(found.getId(), equalTo(reportedIncident.getId()));
         assertThat(found.getIncidentId(), equalTo(reportedIncident.getIncidentId()));
-
     }
 
+    @Test
+    public void testUpdateReportedIncident() {
+
+        //end the current transaction
+        TestTransaction.end();
+
+        ReportedIncident incident = new ReportedIncident.Builder()
+                .incidentId("testId")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.REPORTED.name())
+                .build();
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.create(incident);
+            return null;
+        });
+
+        ReportedIncident updated = new ReportedIncident.Builder(incident.getId())
+                .incidentId("testId")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(incident.getTimestamp())
+                .status(IncidentStatus.PICKEDUP.name())
+                .build();
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            ReportedIncident current = reportedIncidentDao.findByIncidentId("testId");
+            assertThat(current, notNullValue());
+            assertThat(current.getStatus(), equalTo("REPORTED"));
+            reportedIncidentDao.merge(updated);
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            ReportedIncident current = reportedIncidentDao.findByIncidentId("testId");
+            assertThat(current, notNullValue());
+            assertThat(current.getStatus(), equalTo("PICKEDUP"));
+            return null;
+        });
+    }
 }
