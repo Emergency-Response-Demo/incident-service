@@ -111,9 +111,10 @@ public class ReportedIncident {
             reportedIncident = new ReportedIncident();
         }
 
-        public Builder(long id) {
+        public Builder(long id, long version) {
             reportedIncident = new ReportedIncident();
             reportedIncident.id = id;
+            reportedIncident.version = version;
         }
 
         public Builder incidentId(String incidentId) {

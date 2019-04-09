@@ -89,7 +89,7 @@ public class ReportedIncidentService {
         if (incident == null) {
             return null;
         }
-        return new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(current.getId())
+        return new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(current.getId(), current.getVersion())
                 .incidentId(incident.getId())
                 .latitude(incident.getLat() == null? current.getLatitude() : incident.getLat())
                 .longitude(incident.getLon() == null? current.getLongitude() : incident.getLon())

@@ -103,7 +103,7 @@ public class ReportedIncidentServiceTest {
 
         ReportedIncident toUpdate = new ReportedIncident.Builder("testId").status(IncidentStatus.PICKEDUP.name()).build();
 
-        com.redhat.cajun.navy.incident.entity.ReportedIncident current = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L)
+        com.redhat.cajun.navy.incident.entity.ReportedIncident current = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -115,7 +115,7 @@ public class ReportedIncidentServiceTest {
                 .status(IncidentStatus.REPORTED.name())
                 .build();
 
-        com.redhat.cajun.navy.incident.entity.ReportedIncident updated = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L)
+        com.redhat.cajun.navy.incident.entity.ReportedIncident updated = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")

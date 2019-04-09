@@ -102,7 +102,7 @@ public class DaoTest {
             return null;
         });
 
-        ReportedIncident updated = new ReportedIncident.Builder(incident.getId())
+        ReportedIncident updated = new ReportedIncident.Builder(incident.getId(), incident.getVersion())
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
