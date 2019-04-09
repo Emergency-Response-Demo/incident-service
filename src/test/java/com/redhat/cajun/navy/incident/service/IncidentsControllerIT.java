@@ -5,8 +5,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 
 import com.redhat.cajun.navy.incident.dao.ReportedIncidentDao;
 import com.redhat.cajun.navy.incident.entity.ReportedIncident;
+import com.redhat.cajun.navy.incident.listener.UpdateIncidentCommandListener;
 import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
 import com.redhat.cajun.navy.incident.message.Message;
 import io.restassured.RestAssured;
@@ -28,6 +29,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -40,6 +42,9 @@ public class IncidentsControllerIT {
 
     @Value("${local.server.port}")
     private int port;
+
+    @MockBean
+    private UpdateIncidentCommandListener updateIncidentCommandListener;
 
     @Autowired
     private KafkaTemplate<String, Message<?>> kafkaTemplate;

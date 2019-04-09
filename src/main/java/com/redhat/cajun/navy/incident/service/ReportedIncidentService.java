@@ -70,6 +70,7 @@ public class ReportedIncidentService {
 
     }
 
+    @Transactional
     public void updateIncident(ReportedIncident incident) {
         com.redhat.cajun.navy.incident.entity.ReportedIncident current = reportedIncidentDao.findByIncidentId(incident.getId());
         if (current == null) {

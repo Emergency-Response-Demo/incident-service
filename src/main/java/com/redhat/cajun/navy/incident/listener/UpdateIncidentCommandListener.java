@@ -15,7 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UpdateIncidentCommandListener {
 
     private final static Logger log = LoggerFactory.getLogger(UpdateIncidentCommandListener.class);
@@ -26,7 +28,7 @@ public class UpdateIncidentCommandListener {
     @Autowired
     private ReportedIncidentService reportedIncidentService;
 
-    @KafkaListener(topics = "${listener.destination.update-responder-command}")
+    @KafkaListener(topics = "${listener.destination.update-incident-command}")
     public void processMessage(@Payload String messageAsJson) {
 
         acceptMessageType(messageAsJson).ifPresent(m -> processUpdateIncidentCommand(messageAsJson));
@@ -39,7 +41,7 @@ public class UpdateIncidentCommandListener {
             message = new ObjectMapper().readValue(messageAsJson, new TypeReference<Message<UpdateIncidentCommand>>() {});
             ReportedIncident incident = message.getBody().getIncident();
 
-            log.debug("Processing '" + UPDATE_INCIDENT_COMMAND + "' message for responder '" + incident.getId() + "'");
+            log.debug("Processing '" + UPDATE_INCIDENT_COMMAND + "' message for incident '" + incident.getId() + "'");
             reportedIncidentService.updateIncident(incident);
         } catch (Exception e) {
             log.error("Error processing msg " + messageAsJson, e);
