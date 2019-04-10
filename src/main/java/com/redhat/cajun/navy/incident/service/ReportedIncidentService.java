@@ -1,7 +1,9 @@
 package com.redhat.cajun.navy.incident.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.redhat.cajun.navy.incident.dao.ReportedIncidentDao;
 import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
@@ -85,6 +87,13 @@ public class ReportedIncidentService {
         }
     }
 
+    @Transactional
+    public List<ReportedIncident> incidents() {
+
+        return reportedIncidentDao.findAll().stream().map(this::to).collect(Collectors.toList());
+
+    }
+
     private com.redhat.cajun.navy.incident.entity.ReportedIncident from(ReportedIncident incident, com.redhat.cajun.navy.incident.entity.ReportedIncident current) {
         if (incident == null) {
             return null;
@@ -99,6 +108,24 @@ public class ReportedIncidentService {
                 .victimPhoneNumber(incident.getVictimPhoneNumber() == null? current.getVictimPhoneNumber() : incident.getVictimPhoneNumber())
                 .status(incident.getStatus() == null? current.getStatus() : incident.getStatus())
                 .reportedTime(current.getTimestamp())
+                .build();
+    }
+
+    private ReportedIncident to(com.redhat.cajun.navy.incident.entity.ReportedIncident r) {
+
+        if (r == null) {
+            return null;
+        }
+
+        return new ReportedIncident.Builder(r.getIncidentId())
+                .lat(r.getLatitude())
+                .lon(r.getLongitude())
+                .medicalNeeded(r.isMedicalNeeded())
+                .numberOfPeople(r.getNumberOfPeople())
+                .victimName(r.getVictimName())
+                .victimPhoneNumber(r.getVictimPhoneNumber())
+                .status(r.getStatus())
+                .timestamp(r.getTimestamp())
                 .build();
     }
 

@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.redhat.cajun.navy.incident.entity.ReportedIncident;
@@ -126,6 +127,57 @@ public class DaoTest {
             ReportedIncident current = reportedIncidentDao.findByIncidentId("testId");
             assertThat(current, notNullValue());
             assertThat(current.getStatus(), equalTo("PICKEDUP"));
+            return null;
+        });
+    }
+
+    @Test
+    @Transactional
+    public void testFindAllReportedIncidents() {
+
+        //end the current transaction
+        TestTransaction.end();
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.deleteAll();
+            return null;
+        });
+
+        ReportedIncident reportedIncident1= new ReportedIncident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("30.12345")
+                .longitude("-70.98765")
+                .numberOfPeople(3)
+                .medicalNeeded(false)
+                .victimName("John Doe")
+                .victimPhoneNumber("123-456-789")
+                .status("Reported")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+        ReportedIncident reportedIncident2= new ReportedIncident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("35.12345")
+                .longitude("-75.98765")
+                .numberOfPeople(4)
+                .medicalNeeded(false)
+                .victimName("John Foo")
+                .victimPhoneNumber("123-456-789")
+                .status("Reported")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.create(reportedIncident1);
+            reportedIncidentDao.create(reportedIncident2);
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<ReportedIncident> result = reportedIncidentDao.findAll();
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(2));
             return null;
         });
     }

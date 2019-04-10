@@ -1,7 +1,9 @@
 package com.redhat.cajun.navy.incident.service;
 
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,6 +16,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import com.redhat.cajun.navy.incident.dao.ReportedIncidentDao;
 import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
@@ -147,6 +151,53 @@ public class ReportedIncidentServiceTest {
         assertThat(entity.getReportedTime(), equalTo(current.getReportedTime()));
         assertThat(entity.getStatus(), equalTo("PICKEDUP"));
 
+    }
+
+    @Test
+    public void testFindAllIncidents() {
+        com.redhat.cajun.navy.incident.entity.ReportedIncident incident1 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+                .incidentId("incident123")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.REPORTED.name())
+                .build();
+
+        com.redhat.cajun.navy.incident.entity.ReportedIncident incident2 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(2L, 1L)
+                .incidentId("incident987")
+                .victimName("John Foo")
+                .victimPhoneNumber("999-888-777")
+                .latitude("35.12345")
+                .longitude("-71.98765")
+                .numberOfPeople(6)
+                .medicalNeeded(false)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.PICKEDUP.name())
+                .build();
+
+        when(reportedIncidentDao.findAll()).thenReturn(Arrays.asList(incident1, incident2));
+
+        List<ReportedIncident> incidents = service.incidents();
+        assertThat(incidents, notNullValue());
+        assertThat(incidents.size(), equalTo(2));
+        assertThat(incidents.get(0).getId(), anyOf(equalTo("incident123"), equalTo("incident987")));
+        assertThat(incidents.get(1).getId(), anyOf(equalTo("incident123"), equalTo("incident987")));
+        assertThat(incidents.get(0).getId(), not(equalTo(incidents.get(1).getId())));
+        assertThat(incidents.get(0).getVictimName(), anyOf(equalTo("John Doe"), equalTo("John Foo")));
+        assertThat(incidents.get(1).getVictimName(), anyOf(equalTo("John Doe"), equalTo("John Foo")));
+        assertThat(incidents.get(0).getVictimName(), not(equalTo(incidents.get(1).getVictimName())));
+        assertThat(incidents.get(0).getVictimPhoneNumber(), anyOf(equalTo("111-222-333"), equalTo("999-888-777")));
+        assertThat(incidents.get(0).getLat(), anyOf(equalTo("30.12345"), equalTo("35.12345")));
+        assertThat(incidents.get(0).getLon(), anyOf(equalTo("-77.98765"), equalTo("-71.98765")));
+        assertThat(incidents.get(0).getNumberOfPeople(), anyOf(equalTo(2), equalTo(6)));
+        assertThat(incidents.get(0).isMedicalNeeded(), anyOf(equalTo(true), equalTo(false)));
+        assertThat(incidents.get(0).isMedicalNeeded(), not(equalTo(incidents.get(1).isMedicalNeeded())));
+        assertThat(incidents.get(0).getStatus(), anyOf(equalTo("REPORTED"), equalTo("ASSIGNED")));
+        assertThat(incidents.get(0).getStatus(), not(equalTo(incidents.get(1).getStatus())));
     }
 
 }
