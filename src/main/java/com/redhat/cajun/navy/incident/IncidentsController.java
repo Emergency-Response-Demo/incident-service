@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,6 +51,11 @@ public class IncidentsController {
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ReportedIncident>> incidents() {
         return new ResponseEntity<>(reportedIncidentService.incidents(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{status}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ReportedIncident>> incidentsByStatus(@PathVariable String status) {
+        return new ResponseEntity<>(reportedIncidentService.incidentsByStatus(status), HttpStatus.OK);
     }
 
 }

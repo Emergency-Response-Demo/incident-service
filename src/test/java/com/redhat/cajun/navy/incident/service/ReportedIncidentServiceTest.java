@@ -17,6 +17,7 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.redhat.cajun.navy.incident.dao.ReportedIncidentDao;
@@ -198,6 +199,52 @@ public class ReportedIncidentServiceTest {
         assertThat(incidents.get(0).isMedicalNeeded(), not(equalTo(incidents.get(1).isMedicalNeeded())));
         assertThat(incidents.get(0).getStatus(), anyOf(equalTo("REPORTED"), equalTo("ASSIGNED")));
         assertThat(incidents.get(0).getStatus(), not(equalTo(incidents.get(1).getStatus())));
+
+        verify(reportedIncidentDao).findAll();
+    }
+
+    @Test
+    public void testFindIncidentsByStatus() {
+        com.redhat.cajun.navy.incident.entity.ReportedIncident incident1 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+                .incidentId("incident123")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.REPORTED.name())
+                .build();
+
+        when(reportedIncidentDao.findByStatus("reported")).thenReturn(Collections.singletonList(incident1));
+
+        List<ReportedIncident> incidents = service.incidentsByStatus("reported");
+        assertThat(incidents, notNullValue());
+        assertThat(incidents.size(), equalTo(1));
+        ReportedIncident result = incidents.get(0);
+        assertThat(result.getId(), equalTo("incident123"));
+        assertThat(result.getVictimName(), equalTo("John Doe"));
+        assertThat(result.getVictimPhoneNumber(), equalTo("111-222-333"));
+        assertThat(result.getLat(), equalTo("30.12345"));
+        assertThat(result.getLon(), equalTo("-77.98765"));
+        assertThat(result.getNumberOfPeople(), equalTo(2));
+        assertThat(result.isMedicalNeeded(), equalTo(true));
+        assertThat(result.getStatus(), equalTo("REPORTED"));
+
+        verify(reportedIncidentDao).findByStatus("reported");
+    }
+
+    @Test
+    public void testFindIncidentsByStatusEmptyList() {
+
+        when(reportedIncidentDao.findByStatus("reported")).thenReturn(Collections.emptyList());
+
+        List<ReportedIncident> incidents = service.incidentsByStatus("reported");
+        assertThat(incidents, notNullValue());
+        assertThat(incidents.size(), equalTo(0));
+
+        verify(reportedIncidentDao).findByStatus("reported");
     }
 
 }

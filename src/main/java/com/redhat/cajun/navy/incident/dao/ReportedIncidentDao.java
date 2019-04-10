@@ -43,6 +43,12 @@ public class ReportedIncidentDao {
         return entityManager.createQuery("SELECT r from ReportedIncident r").getResultList();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<ReportedIncident> findByStatus(String status) {
+        return entityManager.createQuery("SELECT r from ReportedIncident r WHERE r.status = :status")
+                .setParameter("status", status.toUpperCase()).getResultList();
+    }
+
     void deleteAll() {
         Query deleteAll = entityManager.createQuery("DELETE FROM ReportedIncident");
         deleteAll.executeUpdate();

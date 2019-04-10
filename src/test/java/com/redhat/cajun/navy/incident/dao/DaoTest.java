@@ -181,4 +181,108 @@ public class DaoTest {
             return null;
         });
     }
+
+    @Test
+    @Transactional
+    public void testFindReportedIncidentsByStatus() {
+
+        //end the current transaction
+        TestTransaction.end();
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.deleteAll();
+            return null;
+        });
+
+        ReportedIncident reportedIncident1= new ReportedIncident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("30.12345")
+                .longitude("-70.98765")
+                .numberOfPeople(3)
+                .medicalNeeded(false)
+                .victimName("John Doe")
+                .victimPhoneNumber("123-456-789")
+                .status("REPORTED")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+        ReportedIncident reportedIncident2= new ReportedIncident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("35.12345")
+                .longitude("-75.98765")
+                .numberOfPeople(4)
+                .medicalNeeded(false)
+                .victimName("John Foo")
+                .victimPhoneNumber("123-456-789")
+                .status("ASSIGNED")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.create(reportedIncident1);
+            reportedIncidentDao.create(reportedIncident2);
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<ReportedIncident> result = reportedIncidentDao.findByStatus("reported");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            assertThat(result.get(0).getVictimName(), equalTo("John Doe"));
+            assertThat(result.get(0).getStatus(), equalTo("REPORTED"));
+            return null;
+        });
+    }
+
+    @Test
+    @Transactional
+    public void testFindReportedIncidentsByStatusEmptyList() {
+
+        //end the current transaction
+        TestTransaction.end();
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.deleteAll();
+            return null;
+        });
+
+        ReportedIncident reportedIncident1= new ReportedIncident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("30.12345")
+                .longitude("-70.98765")
+                .numberOfPeople(3)
+                .medicalNeeded(false)
+                .victimName("John Doe")
+                .victimPhoneNumber("123-456-789")
+                .status("REPORTED")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+        ReportedIncident reportedIncident2= new ReportedIncident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("35.12345")
+                .longitude("-75.98765")
+                .numberOfPeople(4)
+                .medicalNeeded(false)
+                .victimName("John Foo")
+                .victimPhoneNumber("123-456-789")
+                .status("ASSIGNED")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            reportedIncidentDao.create(reportedIncident1);
+            reportedIncidentDao.create(reportedIncident2);
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<ReportedIncident> result = reportedIncidentDao.findByStatus("rescued");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(0));
+            return null;
+        });
+    }
 }

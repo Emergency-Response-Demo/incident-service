@@ -94,6 +94,13 @@ public class ReportedIncidentService {
 
     }
 
+    @Transactional
+    public List<ReportedIncident> incidentsByStatus(String status) {
+
+        return reportedIncidentDao.findByStatus(status).stream().map(this::to).collect(Collectors.toList());
+
+    }
+
     private com.redhat.cajun.navy.incident.entity.ReportedIncident from(ReportedIncident incident, com.redhat.cajun.navy.incident.entity.ReportedIncident current) {
         if (incident == null) {
             return null;
