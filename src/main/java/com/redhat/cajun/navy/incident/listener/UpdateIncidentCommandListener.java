@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
@@ -29,9 +30,16 @@ public class UpdateIncidentCommandListener {
     private ReportedIncidentService reportedIncidentService;
 
     @KafkaListener(topics = "${listener.destination.update-incident-command}")
-    public void processMessage(@Payload String messageAsJson) {
+    public void processMessage(@Payload String messageAsJson, Acknowledgment ack) {
 
-        acceptMessageType(messageAsJson).ifPresent(m -> processUpdateIncidentCommand(messageAsJson));
+        try {
+            acceptMessageType(messageAsJson).ifPresent(m -> processUpdateIncidentCommand(messageAsJson));
+        } catch (Exception e) {
+            log.error("Error processing msg " + messageAsJson, e);
+            throw new IllegalStateException(e.getMessage(), e);
+        } finally {
+            ack.acknowledge();
+        }
     }
 
     private void processUpdateIncidentCommand(String messageAsJson) {

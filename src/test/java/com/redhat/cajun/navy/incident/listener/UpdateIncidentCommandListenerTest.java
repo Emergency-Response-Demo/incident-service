@@ -17,11 +17,15 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.springframework.kafka.support.Acknowledgment;
 
 public class UpdateIncidentCommandListenerTest {
 
     @Mock
     private ReportedIncidentService reportedIncidentService;
+
+    @Mock
+    private Acknowledgment ack;
 
     @Captor
     private ArgumentCaptor<ReportedIncident> incidentCaptor;
@@ -48,7 +52,7 @@ public class UpdateIncidentCommandListenerTest {
                 "\"status\" : \"PICKEDUP\"" +
                 "} " + "} " + "}";
 
-        listener.processMessage(json);
+        listener.processMessage(json, ack);
         verify(reportedIncidentService).updateIncident(incidentCaptor.capture());
         ReportedIncident captured = incidentCaptor.getValue();
         assertThat(captured, notNullValue());
@@ -60,6 +64,7 @@ public class UpdateIncidentCommandListenerTest {
         assertThat(captured.isMedicalNeeded(), nullValue());
         assertThat(captured.getVictimName(), nullValue());
         assertThat(captured.getVictimPhoneNumber(), nullValue());
+        verify(ack).acknowledge();
     }
 
     @Test
@@ -72,9 +77,10 @@ public class UpdateIncidentCommandListenerTest {
                 "\"body\":{} " +
                 "}";
 
-        listener.processMessage(json);
+        listener.processMessage(json, ack);
 
         verify(reportedIncidentService, never()).updateIncident(any(ReportedIncident.class));
+        verify(ack).acknowledge();
     }
 
     @Test
@@ -82,9 +88,11 @@ public class UpdateIncidentCommandListenerTest {
         String json = "{\"field1\":\"value1\"," +
                 "\"field2\":\"value2\"}";
 
-        listener.processMessage(json);
+        listener.processMessage(json, ack);
 
         verify(reportedIncidentService, never()).updateIncident(any(ReportedIncident.class));
+        verify(ack).acknowledge();
+
     }
 
 }
