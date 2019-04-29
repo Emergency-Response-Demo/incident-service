@@ -47,4 +47,10 @@ public class IncidentsController {
         }
     }
 
+    @RequestMapping(value = "/reset", method = RequestMethod.POST)
+    public ResponseEntity reset() {
+        incidentService.reset();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

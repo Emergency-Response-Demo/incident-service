@@ -105,6 +105,11 @@ public class IncidentService {
 
     }
 
+    @Transactional
+    public void reset() {
+        incidentDao.deleteAll();
+    }
+
     private com.redhat.cajun.navy.incident.entity.Incident from(Incident incident, com.redhat.cajun.navy.incident.entity.Incident current) {
         if (incident == null) {
             return null;

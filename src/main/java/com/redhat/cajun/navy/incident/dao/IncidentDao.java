@@ -49,7 +49,7 @@ public class IncidentDao {
                 .setParameter("status", status.toUpperCase()).getResultList();
     }
 
-    void deleteAll() {
+    public void deleteAll() {
         Query deleteAll = entityManager.createQuery("DELETE FROM Incident");
         deleteAll.executeUpdate();
     }
