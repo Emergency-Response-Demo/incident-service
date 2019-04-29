@@ -58,4 +58,14 @@ public class IncidentsController {
         return new ResponseEntity<>(reportedIncidentService.incidentsByStatus(status), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/incident/{id}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ReportedIncident> incident(@PathVariable String id) {
+        ReportedIncident incident = reportedIncidentService.getIncident(id);
+        if (incident == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(incident, HttpStatus.OK);
+        }
+    }
+
 }

@@ -72,6 +72,12 @@ public class ReportedIncidentService {
 
     }
 
+    public ReportedIncident getIncident(String incidentId){
+        reportedIncidentDao.findByIncidentId(incidentId);
+        return to(reportedIncidentDao.findByIncidentId(incidentId));
+
+    }
+
     @Transactional
     public void updateIncident(ReportedIncident incident) {
         com.redhat.cajun.navy.incident.entity.ReportedIncident current = reportedIncidentDao.findByIncidentId(incident.getId());
