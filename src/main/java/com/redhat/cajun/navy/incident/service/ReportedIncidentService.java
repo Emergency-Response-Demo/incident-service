@@ -73,9 +73,7 @@ public class ReportedIncidentService {
     }
 
     public ReportedIncident getIncident(String incidentId){
-        reportedIncidentDao.findByIncidentId(incidentId);
         return to(reportedIncidentDao.findByIncidentId(incidentId));
-
     }
 
     @Transactional
