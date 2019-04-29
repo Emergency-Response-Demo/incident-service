@@ -1,12 +1,12 @@
 package com.redhat.cajun.navy.incident.message;
 
-import com.redhat.cajun.navy.incident.model.ReportedIncident;
+import com.redhat.cajun.navy.incident.model.Incident;
 
 public class UpdateIncidentCommand {
 
-    private ReportedIncident incident;
+    private Incident incident;
 
-    public ReportedIncident getIncident() {
+    public Incident getIncident() {
         return incident;
     }
 }

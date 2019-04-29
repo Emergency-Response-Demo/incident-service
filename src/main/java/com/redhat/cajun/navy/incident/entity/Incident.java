@@ -17,7 +17,7 @@ import javax.persistence.Version;
 @Access(AccessType.FIELD)
 @SequenceGenerator(name="ReportedIncidentSeq", sequenceName="REPORTED_INCIDENT_SEQ")
 @Table(name = "reported_incident")
-public class ReportedIncident {
+public class Incident {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="ReportedIncidentSeq")
@@ -105,65 +105,65 @@ public class ReportedIncident {
 
     public static class Builder {
 
-        private final ReportedIncident reportedIncident;
+        private final Incident incident;
 
         public Builder() {
-            reportedIncident = new ReportedIncident();
+            incident = new Incident();
         }
 
         public Builder(long id, long version) {
-            reportedIncident = new ReportedIncident();
-            reportedIncident.id = id;
-            reportedIncident.version = version;
+            incident = new Incident();
+            incident.id = id;
+            incident.version = version;
         }
 
         public Builder incidentId(String incidentId) {
-            reportedIncident.incidentId = incidentId;
+            incident.incidentId = incidentId;
             return this;
         }
 
         public Builder latitude(String latitude) {
-            reportedIncident.latitude = latitude;
+            incident.latitude = latitude;
             return this;
         }
 
         public Builder longitude(String longitude) {
-            reportedIncident.longitude = longitude;
+            incident.longitude = longitude;
             return this;
         }
 
         public Builder numberOfPeople(Integer numberOfPeople) {
-            reportedIncident.numberOfPeople = numberOfPeople;
+            incident.numberOfPeople = numberOfPeople;
             return this;
         }
 
         public Builder medicalNeeded(Boolean medicalNeeded) {
-            reportedIncident.medicalNeeded = medicalNeeded;
+            incident.medicalNeeded = medicalNeeded;
             return this;
         }
 
         public Builder victimName(String victimName) {
-            reportedIncident.victimName = victimName;
+            incident.victimName = victimName;
             return this;
         }
 
         public Builder victimPhoneNumber(String victimPhoneNumber) {
-            reportedIncident.victimPhoneNumber = victimPhoneNumber;
+            incident.victimPhoneNumber = victimPhoneNumber;
             return this;
         }
 
         public Builder reportedTime(long timestamp) {
-            reportedIncident.reportedTime = Instant.ofEpochMilli(timestamp);
+            incident.reportedTime = Instant.ofEpochMilli(timestamp);
             return this;
         }
 
         public Builder status(String status) {
-            reportedIncident.status = status;
+            incident.status = status;
             return this;
         }
 
-        public ReportedIncident build() {
-            return reportedIncident;
+        public Incident build() {
+            return incident;
         }
 
     }

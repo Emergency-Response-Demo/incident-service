@@ -1,6 +1,6 @@
 package com.redhat.cajun.navy.incident.model;
 
-public class ReportedIncident {
+public class Incident {
 
     private String id;
 
@@ -58,14 +58,14 @@ public class ReportedIncident {
 
     public static class Builder {
 
-        private final ReportedIncident incident;
+        private final Incident incident;
 
         public Builder() {
-            incident = new ReportedIncident();
+            incident = new Incident();
         }
 
         public Builder(String id) {
-            incident = new ReportedIncident();
+            incident = new Incident();
             incident.id = id;
         }
 
@@ -109,7 +109,7 @@ public class ReportedIncident {
             return this;
         }
 
-        public ReportedIncident build() {
+        public Incident build() {
             return incident;
         }
 

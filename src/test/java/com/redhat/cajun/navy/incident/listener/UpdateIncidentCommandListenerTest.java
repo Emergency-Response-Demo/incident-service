@@ -10,8 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-import com.redhat.cajun.navy.incident.model.ReportedIncident;
-import com.redhat.cajun.navy.incident.service.ReportedIncidentService;
+import com.redhat.cajun.navy.incident.model.Incident;
+import com.redhat.cajun.navy.incident.service.IncidentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -22,13 +22,13 @@ import org.springframework.kafka.support.Acknowledgment;
 public class UpdateIncidentCommandListenerTest {
 
     @Mock
-    private ReportedIncidentService reportedIncidentService;
+    private IncidentService incidentService;
 
     @Mock
     private Acknowledgment ack;
 
     @Captor
-    private ArgumentCaptor<ReportedIncident> incidentCaptor;
+    private ArgumentCaptor<Incident> incidentCaptor;
 
     private UpdateIncidentCommandListener listener;
 
@@ -36,7 +36,7 @@ public class UpdateIncidentCommandListenerTest {
     public void init() {
         initMocks(this);
         listener = new UpdateIncidentCommandListener();
-        setField(listener, null, reportedIncidentService, ReportedIncidentService.class);
+        setField(listener, null, incidentService, IncidentService.class);
     }
 
     @Test
@@ -53,8 +53,8 @@ public class UpdateIncidentCommandListenerTest {
                 "} " + "} " + "}";
 
         listener.processMessage(json, ack);
-        verify(reportedIncidentService).updateIncident(incidentCaptor.capture());
-        ReportedIncident captured = incidentCaptor.getValue();
+        verify(incidentService).updateIncident(incidentCaptor.capture());
+        Incident captured = incidentCaptor.getValue();
         assertThat(captured, notNullValue());
         assertThat(captured.getId(), equalTo("qwerty"));
         assertThat(captured.getStatus(), equalTo("PICKEDUP"));
@@ -79,7 +79,7 @@ public class UpdateIncidentCommandListenerTest {
 
         listener.processMessage(json, ack);
 
-        verify(reportedIncidentService, never()).updateIncident(any(ReportedIncident.class));
+        verify(incidentService, never()).updateIncident(any(Incident.class));
         verify(ack).acknowledge();
     }
 
@@ -90,7 +90,7 @@ public class UpdateIncidentCommandListenerTest {
 
         listener.processMessage(json, ack);
 
-        verify(reportedIncidentService, never()).updateIncident(any(ReportedIncident.class));
+        verify(incidentService, never()).updateIncident(any(Incident.class));
         verify(ack).acknowledge();
 
     }

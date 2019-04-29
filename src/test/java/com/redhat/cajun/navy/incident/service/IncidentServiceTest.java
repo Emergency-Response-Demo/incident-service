@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.redhat.cajun.navy.incident.dao.ReportedIncidentDao;
+import com.redhat.cajun.navy.incident.dao.IncidentDao;
 import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
 import com.redhat.cajun.navy.incident.message.Message;
 import com.redhat.cajun.navy.incident.model.IncidentStatus;
-import com.redhat.cajun.navy.incident.model.ReportedIncident;
+import com.redhat.cajun.navy.incident.model.Incident;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -33,29 +33,29 @@ import org.mockito.Mock;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.concurrent.ListenableFuture;
 
-public class ReportedIncidentServiceTest {
+public class IncidentServiceTest {
 
     @Mock
     private KafkaTemplate<String, Message<?>> kafkaTemplate;
 
     @Mock
-    private ReportedIncidentDao reportedIncidentDao;
+    private IncidentDao incidentDao;
 
     @Captor
-    private ArgumentCaptor<com.redhat.cajun.navy.incident.entity.ReportedIncident> entityCaptor;
+    private ArgumentCaptor<com.redhat.cajun.navy.incident.entity.Incident> entityCaptor;
 
     @Captor
     private ArgumentCaptor<Message<IncidentReportedEvent>> messageCaptor;
 
-    private ReportedIncidentService service;
+    private IncidentService service;
 
     @Before
     @SuppressWarnings("unchecked")
     public void init() {
         initMocks(this);
-        service = new ReportedIncidentService();
+        service = new IncidentService();
         setField(service, null, kafkaTemplate, KafkaTemplate.class);
-        setField(service, null, reportedIncidentDao, ReportedIncidentDao.class);
+        setField(service, null, incidentDao, IncidentDao.class);
         setField(service, "destination", "test-topic", String.class);
         ListenableFuture future = mock(ListenableFuture.class);
         when(kafkaTemplate.send(anyString(), anyString(), any())).thenReturn(future);
@@ -64,7 +64,7 @@ public class ReportedIncidentServiceTest {
     @Test
     public void testSendIncidentReportEventMessage() {
 
-        ReportedIncident incident = new ReportedIncident.Builder()
+        Incident incident = new Incident.Builder()
                 .lat("30.12345")
                 .lon("-70.98765")
                 .numberOfPeople(2)
@@ -75,8 +75,8 @@ public class ReportedIncidentServiceTest {
 
         service.sendIncidentReportedEventMessage(incident);
 
-        verify(reportedIncidentDao).create(entityCaptor.capture());
-        com.redhat.cajun.navy.incident.entity.ReportedIncident entity = entityCaptor.getValue();
+        verify(incidentDao).create(entityCaptor.capture());
+        com.redhat.cajun.navy.incident.entity.Incident entity = entityCaptor.getValue();
         String incidentId = entity.getIncidentId();
         assertThat(incidentId, notNullValue());
         assertThat(entity.getLatitude(), equalTo(incident.getLat()));
@@ -106,9 +106,9 @@ public class ReportedIncidentServiceTest {
     @Test
     public void testUpdateIncident() {
 
-        ReportedIncident toUpdate = new ReportedIncident.Builder("testId").status(IncidentStatus.PICKEDUP.name()).build();
+        Incident toUpdate = new Incident.Builder("testId").status(IncidentStatus.PICKEDUP.name()).build();
 
-        com.redhat.cajun.navy.incident.entity.ReportedIncident current = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+        com.redhat.cajun.navy.incident.entity.Incident current = new com.redhat.cajun.navy.incident.entity.Incident.Builder(1L, 1L)
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -120,7 +120,7 @@ public class ReportedIncidentServiceTest {
                 .status(IncidentStatus.REPORTED.name())
                 .build();
 
-        com.redhat.cajun.navy.incident.entity.ReportedIncident updated = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+        com.redhat.cajun.navy.incident.entity.Incident updated = new com.redhat.cajun.navy.incident.entity.Incident.Builder(1L, 1L)
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -132,14 +132,14 @@ public class ReportedIncidentServiceTest {
                 .status(IncidentStatus.PICKEDUP.name())
                 .build();
 
-        when(reportedIncidentDao.findByIncidentId(any(String.class))).thenReturn(current);
-        when(reportedIncidentDao.merge(any(com.redhat.cajun.navy.incident.entity.ReportedIncident.class))).thenReturn(updated);
+        when(incidentDao.findByIncidentId(any(String.class))).thenReturn(current);
+        when(incidentDao.merge(any(com.redhat.cajun.navy.incident.entity.Incident.class))).thenReturn(updated);
 
         service.updateIncident(toUpdate);
 
-        verify(reportedIncidentDao).findByIncidentId(eq("testId"));
-        verify(reportedIncidentDao).merge(entityCaptor.capture());
-        com.redhat.cajun.navy.incident.entity.ReportedIncident entity = entityCaptor.getValue();
+        verify(incidentDao).findByIncidentId(eq("testId"));
+        verify(incidentDao).merge(entityCaptor.capture());
+        com.redhat.cajun.navy.incident.entity.Incident entity = entityCaptor.getValue();
         assertThat(entity, notNullValue());
         assertThat(entity.getId(), equalTo(1L));
         assertThat(entity.getIncidentId(), equalTo("testId"));
@@ -156,7 +156,7 @@ public class ReportedIncidentServiceTest {
 
     @Test
     public void testFindAllIncidents() {
-        com.redhat.cajun.navy.incident.entity.ReportedIncident incident1 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+        com.redhat.cajun.navy.incident.entity.Incident incident1 = new com.redhat.cajun.navy.incident.entity.Incident.Builder(1L, 1L)
                 .incidentId("incident123")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -168,7 +168,7 @@ public class ReportedIncidentServiceTest {
                 .status(IncidentStatus.REPORTED.name())
                 .build();
 
-        com.redhat.cajun.navy.incident.entity.ReportedIncident incident2 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(2L, 1L)
+        com.redhat.cajun.navy.incident.entity.Incident incident2 = new com.redhat.cajun.navy.incident.entity.Incident.Builder(2L, 1L)
                 .incidentId("incident987")
                 .victimName("John Foo")
                 .victimPhoneNumber("999-888-777")
@@ -180,9 +180,9 @@ public class ReportedIncidentServiceTest {
                 .status(IncidentStatus.PICKEDUP.name())
                 .build();
 
-        when(reportedIncidentDao.findAll()).thenReturn(Arrays.asList(incident1, incident2));
+        when(incidentDao.findAll()).thenReturn(Arrays.asList(incident1, incident2));
 
-        List<ReportedIncident> incidents = service.incidents();
+        List<Incident> incidents = service.incidents();
         assertThat(incidents, notNullValue());
         assertThat(incidents.size(), equalTo(2));
         assertThat(incidents.get(0).getId(), anyOf(equalTo("incident123"), equalTo("incident987")));
@@ -200,12 +200,12 @@ public class ReportedIncidentServiceTest {
         assertThat(incidents.get(0).getStatus(), anyOf(equalTo("REPORTED"), equalTo("ASSIGNED")));
         assertThat(incidents.get(0).getStatus(), not(equalTo(incidents.get(1).getStatus())));
 
-        verify(reportedIncidentDao).findAll();
+        verify(incidentDao).findAll();
     }
 
     @Test
     public void testFindIncidentsByStatus() {
-        com.redhat.cajun.navy.incident.entity.ReportedIncident incident1 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+        com.redhat.cajun.navy.incident.entity.Incident incident1 = new com.redhat.cajun.navy.incident.entity.Incident.Builder(1L, 1L)
                 .incidentId("incident123")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -217,12 +217,12 @@ public class ReportedIncidentServiceTest {
                 .status(IncidentStatus.REPORTED.name())
                 .build();
 
-        when(reportedIncidentDao.findByStatus("reported")).thenReturn(Collections.singletonList(incident1));
+        when(incidentDao.findByStatus("reported")).thenReturn(Collections.singletonList(incident1));
 
-        List<ReportedIncident> incidents = service.incidentsByStatus("reported");
+        List<Incident> incidents = service.incidentsByStatus("reported");
         assertThat(incidents, notNullValue());
         assertThat(incidents.size(), equalTo(1));
-        ReportedIncident result = incidents.get(0);
+        Incident result = incidents.get(0);
         assertThat(result.getId(), equalTo("incident123"));
         assertThat(result.getVictimName(), equalTo("John Doe"));
         assertThat(result.getVictimPhoneNumber(), equalTo("111-222-333"));
@@ -232,13 +232,13 @@ public class ReportedIncidentServiceTest {
         assertThat(result.isMedicalNeeded(), equalTo(true));
         assertThat(result.getStatus(), equalTo("REPORTED"));
 
-        verify(reportedIncidentDao).findByStatus("reported");
+        verify(incidentDao).findByStatus("reported");
     }
 
 
     @Test
     public void testFindIncidentsById() {
-        com.redhat.cajun.navy.incident.entity.ReportedIncident incident1 = new com.redhat.cajun.navy.incident.entity.ReportedIncident.Builder(1L, 1L)
+        com.redhat.cajun.navy.incident.entity.Incident incident1 = new com.redhat.cajun.navy.incident.entity.Incident.Builder(1L, 1L)
                 .incidentId("incident123")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -251,8 +251,8 @@ public class ReportedIncidentServiceTest {
                 .build();
 
 
-        when(reportedIncidentDao.findByIncidentId("incident123")).thenReturn(incident1);
-        ReportedIncident result = service.getIncident(incident1.getIncidentId());
+        when(incidentDao.findByIncidentId("incident123")).thenReturn(incident1);
+        Incident result = service.getIncident(incident1.getIncidentId());
 
         assertThat(result.getId(), equalTo("incident123"));
         assertThat(result.getVictimName(), equalTo("John Doe"));
@@ -268,13 +268,13 @@ public class ReportedIncidentServiceTest {
     @Test
     public void testFindIncidentsByStatusEmptyList() {
 
-        when(reportedIncidentDao.findByStatus("reported")).thenReturn(Collections.emptyList());
+        when(incidentDao.findByStatus("reported")).thenReturn(Collections.emptyList());
 
-        List<ReportedIncident> incidents = service.incidentsByStatus("reported");
+        List<Incident> incidents = service.incidentsByStatus("reported");
         assertThat(incidents, notNullValue());
         assertThat(incidents.size(), equalTo(0));
 
-        verify(reportedIncidentDao).findByStatus("reported");
+        verify(incidentDao).findByStatus("reported");
     }
 
 }

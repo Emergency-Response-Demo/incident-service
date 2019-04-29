@@ -2,9 +2,8 @@ package com.redhat.cajun.navy.incident;
 
 import java.util.List;
 
-import com.redhat.cajun.navy.incident.model.ReportedIncident;
+import com.redhat.cajun.navy.incident.model.Incident;
 import com.redhat.cajun.navy.incident.service.IncidentService;
-import com.redhat.cajun.navy.incident.service.ReportedIncidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,45 +21,25 @@ public class IncidentsController {
     @Autowired
     private IncidentService incidentService;
 
-    @Autowired
-    private ReportedIncidentService reportedIncidentService;
-
-    @RequestMapping("/map")
-    public List<Incident> map() {
-
-        return incidentService.getIncidentMap();
-
-    }
-
-    @RequestMapping("/stats")
-    public IncidentStats stats() {
-
-        return incidentService.getIncidentStats();
-
-    }
-
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity reportIncident(@RequestBody ReportedIncident incident) {
-
-        reportedIncidentService.sendIncidentReportedEventMessage(incident);
-
+    public ResponseEntity reportIncident(@RequestBody Incident incident) {
+        incidentService.sendIncidentReportedEventMessage(incident);
         return new ResponseEntity(HttpStatus.CREATED);
-
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ReportedIncident>> incidents() {
-        return new ResponseEntity<>(reportedIncidentService.incidents(), HttpStatus.OK);
+    public ResponseEntity<List<Incident>> incidents() {
+        return new ResponseEntity<>(incidentService.incidents(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{status}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<ReportedIncident>> incidentsByStatus(@PathVariable String status) {
-        return new ResponseEntity<>(reportedIncidentService.incidentsByStatus(status), HttpStatus.OK);
+    public ResponseEntity<List<Incident>> incidentsByStatus(@PathVariable String status) {
+        return new ResponseEntity<>(incidentService.incidentsByStatus(status), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/incident/{id}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ReportedIncident> incident(@PathVariable String id) {
-        ReportedIncident incident = reportedIncidentService.getIncident(id);
+    public ResponseEntity<Incident> incident(@PathVariable String id) {
+        Incident incident = incidentService.getIncident(id);
         if (incident == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

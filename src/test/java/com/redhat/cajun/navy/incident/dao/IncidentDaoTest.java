@@ -8,7 +8,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 import java.util.UUID;
 
-import com.redhat.cajun.navy.incident.entity.ReportedIncident;
+import com.redhat.cajun.navy.incident.entity.Incident;
 import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,23 +25,23 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = ReportedIncidentDao.class))
-public class DaoTest {
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, value = IncidentDao.class))
+public class IncidentDaoTest {
 
     @Autowired
-    private ReportedIncidentDao reportedIncidentDao;
+    private IncidentDao incidentDao;
 
     @Autowired
     private PlatformTransactionManager transactionManager;
 
     public void init() {
-      reportedIncidentDao.deleteAll();
+      incidentDao.deleteAll();
     }
 
     @Test
     @Transactional
     public void testSaveReportedIncident() {
-        ReportedIncident reportedIncident= new ReportedIncident.Builder()
+        Incident incident = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("30.12345")
                 .longitude("-70.98765")
@@ -52,15 +52,15 @@ public class DaoTest {
                 .status("Reported")
                 .build();
 
-        reportedIncidentDao.create(reportedIncident);
-        assertThat(reportedIncident.getId(), not(equalTo(0)));
+        incidentDao.create(incident);
+        assertThat(incident.getId(), not(equalTo(0)));
     }
 
     @Test
     @Transactional
     public void testFindReportedIncidentById() {
 
-        ReportedIncident reportedIncident= new ReportedIncident.Builder()
+        Incident incident = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("30.12345")
                 .longitude("-70.98765")
@@ -72,12 +72,12 @@ public class DaoTest {
                 .reportedTime(System.currentTimeMillis())
                 .build();
 
-        reportedIncidentDao.create(reportedIncident);
+        incidentDao.create(incident);
 
-        ReportedIncident found = reportedIncidentDao.findByIncidentId(reportedIncident.getIncidentId());
+        Incident found = incidentDao.findByIncidentId(incident.getIncidentId());
         assertThat(found, notNullValue());
-        assertThat(found.getId(), equalTo(reportedIncident.getId()));
-        assertThat(found.getIncidentId(), equalTo(reportedIncident.getIncidentId()));
+        assertThat(found.getId(), equalTo(incident.getId()));
+        assertThat(found.getIncidentId(), equalTo(incident.getIncidentId()));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class DaoTest {
         //end the current transaction
         TestTransaction.end();
 
-        ReportedIncident incident = new ReportedIncident.Builder()
+        Incident incident = new Incident.Builder()
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -99,11 +99,11 @@ public class DaoTest {
                 .build();
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.create(incident);
+            incidentDao.create(incident);
             return null;
         });
 
-        ReportedIncident updated = new ReportedIncident.Builder(incident.getId(), incident.getVersion())
+        Incident updated = new Incident.Builder(incident.getId(), incident.getVersion())
                 .incidentId("testId")
                 .victimName("John Doe")
                 .victimPhoneNumber("111-222-333")
@@ -116,15 +116,15 @@ public class DaoTest {
                 .build();
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            ReportedIncident current = reportedIncidentDao.findByIncidentId("testId");
+            Incident current = incidentDao.findByIncidentId("testId");
             assertThat(current, notNullValue());
             assertThat(current.getStatus(), equalTo("REPORTED"));
-            reportedIncidentDao.merge(updated);
+            incidentDao.merge(updated);
             return null;
         });
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            ReportedIncident current = reportedIncidentDao.findByIncidentId("testId");
+            Incident current = incidentDao.findByIncidentId("testId");
             assertThat(current, notNullValue());
             assertThat(current.getStatus(), equalTo("PICKEDUP"));
             return null;
@@ -139,11 +139,11 @@ public class DaoTest {
         TestTransaction.end();
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.deleteAll();
+            incidentDao.deleteAll();
             return null;
         });
 
-        ReportedIncident reportedIncident1= new ReportedIncident.Builder()
+        Incident incident1 = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("30.12345")
                 .longitude("-70.98765")
@@ -155,7 +155,7 @@ public class DaoTest {
                 .reportedTime(System.currentTimeMillis())
                 .build();
 
-        ReportedIncident reportedIncident2= new ReportedIncident.Builder()
+        Incident incident2 = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("35.12345")
                 .longitude("-75.98765")
@@ -169,13 +169,13 @@ public class DaoTest {
 
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.create(reportedIncident1);
-            reportedIncidentDao.create(reportedIncident2);
+            incidentDao.create(incident1);
+            incidentDao.create(incident2);
             return null;
         });
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            List<ReportedIncident> result = reportedIncidentDao.findAll();
+            List<Incident> result = incidentDao.findAll();
             assertThat(result, notNullValue());
             assertThat(result.size(), equalTo(2));
             return null;
@@ -190,11 +190,11 @@ public class DaoTest {
         TestTransaction.end();
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.deleteAll();
+            incidentDao.deleteAll();
             return null;
         });
 
-        ReportedIncident reportedIncident1= new ReportedIncident.Builder()
+        Incident incident1 = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("30.12345")
                 .longitude("-70.98765")
@@ -206,7 +206,7 @@ public class DaoTest {
                 .reportedTime(System.currentTimeMillis())
                 .build();
 
-        ReportedIncident reportedIncident2= new ReportedIncident.Builder()
+        Incident incident2 = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("35.12345")
                 .longitude("-75.98765")
@@ -220,13 +220,13 @@ public class DaoTest {
 
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.create(reportedIncident1);
-            reportedIncidentDao.create(reportedIncident2);
+            incidentDao.create(incident1);
+            incidentDao.create(incident2);
             return null;
         });
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            List<ReportedIncident> result = reportedIncidentDao.findByStatus("reported");
+            List<Incident> result = incidentDao.findByStatus("reported");
             assertThat(result, notNullValue());
             assertThat(result.size(), equalTo(1));
             assertThat(result.get(0).getVictimName(), equalTo("John Doe"));
@@ -243,11 +243,11 @@ public class DaoTest {
         TestTransaction.end();
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.deleteAll();
+            incidentDao.deleteAll();
             return null;
         });
 
-        ReportedIncident reportedIncident1= new ReportedIncident.Builder()
+        Incident incident1 = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("30.12345")
                 .longitude("-70.98765")
@@ -259,7 +259,7 @@ public class DaoTest {
                 .reportedTime(System.currentTimeMillis())
                 .build();
 
-        ReportedIncident reportedIncident2= new ReportedIncident.Builder()
+        Incident incident2 = new Incident.Builder()
                 .incidentId(UUID.randomUUID().toString())
                 .latitude("35.12345")
                 .longitude("-75.98765")
@@ -273,13 +273,13 @@ public class DaoTest {
 
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            reportedIncidentDao.create(reportedIncident1);
-            reportedIncidentDao.create(reportedIncident2);
+            incidentDao.create(incident1);
+            incidentDao.create(incident2);
             return null;
         });
 
         new TransactionTemplate(transactionManager).execute(s -> {
-            List<ReportedIncident> result = reportedIncidentDao.findByStatus("rescued");
+            List<Incident> result = incidentDao.findByStatus("rescued");
             assertThat(result, notNullValue());
             assertThat(result.size(), equalTo(0));
             return null;

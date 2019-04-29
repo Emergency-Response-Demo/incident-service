@@ -7,8 +7,8 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-    <!-- ReportedIncident entity -->
-    <class>com.redhat.cajun.navy.incident.entity.ReportedIncident</class>
+    <!-- Incident entity -->
+    <class>com.redhat.cajun.navy.incident.entity.Incident</class>
 
   </persistence-unit>
 
