@@ -1,5 +1,9 @@
 # Incident Service for the Red Hat Cajun Navy Demo 
 
+## External dependencies
+* PostgreSQL
+* Kafka
+
 ## Building
 * Update your Maven settings.xml to use the team Nexus server by adding the following profile:
 ```
@@ -91,3 +95,7 @@ java -jar target/responder-service-0.0.1-SNAPSHOT.jar --spring.config.location=f
 The command above references a boostrap config file (bootstrap.properties), which is already provided under src/test/resources. The bootstrap configuration is read before the regular configuration and disables the ConfigMap behavior by setting `spring.cloud.kubernetes.config.enabled=false`.
 
 ... or you could just run in OpenShift. :)
+
+## Swagger 
+* Swagger ui: http://localhost:8080/swagger-ui.html
+* Swagger docs: http://localhost:8080/v2/api-docs
