@@ -1,5 +1,10 @@
 # Incident Service for the Red Hat Cajun Navy Demo 
 
+## External dependencies
+
+* PostgreSQL
+* Kafka
+
 ## Building
 * Update your Maven settings.xml to use the team Nexus server by adding the following profile:
 ```
