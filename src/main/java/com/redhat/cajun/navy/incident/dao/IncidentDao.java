@@ -49,6 +49,12 @@ public class IncidentDao {
                 .setParameter("status", status.toUpperCase()).getResultList();
     }
 
+    @SuppressWarnings("unchecked")
+    public List<Incident> findByName(String pattern) {
+        return entityManager.createQuery("SELECT i from Incident i WHERE i.victimName LIKE :pattern")
+                .setParameter("pattern", pattern).getResultList();
+    }
+
     public void deleteAll() {
         Query deleteAll = entityManager.createQuery("DELETE FROM Incident");
         deleteAll.executeUpdate();

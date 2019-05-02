@@ -106,6 +106,13 @@ public class IncidentService {
     }
 
     @Transactional
+    public List<Incident> incidentsByName(String name) {
+
+        return incidentDao.findByName(name).stream().map(this::to).collect(Collectors.toList());
+
+    }
+
+    @Transactional
     public void reset() {
         incidentDao.deleteAll();
     }
