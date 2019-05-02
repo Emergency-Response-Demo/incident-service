@@ -343,6 +343,13 @@ public class IncidentDaoTest {
         });
 
         new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("%foo");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
             List<Incident> result = incidentDao.findByName("%Fo%");
             assertThat(result, notNullValue());
             assertThat(result.size(), equalTo(1));
@@ -358,6 +365,13 @@ public class IncidentDaoTest {
 
         new TransactionTemplate(transactionManager).execute(s -> {
             List<Incident> result = incidentDao.findByName("John%");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(2));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("john%");
             assertThat(result, notNullValue());
             assertThat(result.size(), equalTo(2));
             return null;

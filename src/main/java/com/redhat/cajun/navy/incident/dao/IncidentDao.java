@@ -51,8 +51,8 @@ public class IncidentDao {
 
     @SuppressWarnings("unchecked")
     public List<Incident> findByName(String pattern) {
-        return entityManager.createQuery("SELECT i from Incident i WHERE i.victimName LIKE :pattern")
-                .setParameter("pattern", pattern).getResultList();
+        return entityManager.createQuery("SELECT i from Incident i WHERE LOWER(i.victimName) LIKE :pattern")
+                .setParameter("pattern", pattern.toLowerCase()).getResultList();
     }
 
     public void deleteAll() {
