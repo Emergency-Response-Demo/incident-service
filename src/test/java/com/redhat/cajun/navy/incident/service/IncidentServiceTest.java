@@ -277,4 +277,36 @@ public class IncidentServiceTest {
         verify(incidentDao).findByStatus("reported");
     }
 
+    @Test
+    public void testFindIncidentsByName() {
+        com.redhat.cajun.navy.incident.entity.Incident incident1 = new com.redhat.cajun.navy.incident.entity.Incident.Builder(1L, 1L)
+                .incidentId("incident123")
+                .victimName("John Doe")
+                .victimPhoneNumber("111-222-333")
+                .latitude("30.12345")
+                .longitude("-77.98765")
+                .numberOfPeople(2)
+                .medicalNeeded(true)
+                .reportedTime(System.currentTimeMillis())
+                .status(IncidentStatus.REPORTED.name())
+                .build();
+
+        when(incidentDao.findByName("John Doe")).thenReturn(Collections.singletonList(incident1));
+
+        List<Incident> incidents = service.incidentsByName("John Doe");
+        assertThat(incidents, notNullValue());
+        assertThat(incidents.size(), equalTo(1));
+        Incident result = incidents.get(0);
+        assertThat(result.getId(), equalTo("incident123"));
+        assertThat(result.getVictimName(), equalTo("John Doe"));
+        assertThat(result.getVictimPhoneNumber(), equalTo("111-222-333"));
+        assertThat(result.getLat(), equalTo("30.12345"));
+        assertThat(result.getLon(), equalTo("-77.98765"));
+        assertThat(result.getNumberOfPeople(), equalTo(2));
+        assertThat(result.isMedicalNeeded(), equalTo(true));
+        assertThat(result.getStatus(), equalTo("REPORTED"));
+
+        verify(incidentDao).findByName("John Doe");
+    }
+
 }

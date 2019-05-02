@@ -47,6 +47,11 @@ public class IncidentsController {
         }
     }
 
+    @RequestMapping(value = "/victim/byname/{name}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Incident>> incidentsByVictimName(@PathVariable String name) {
+        return new ResponseEntity<>(incidentService.incidentsByName(name), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/reset", method = RequestMethod.POST)
     public ResponseEntity reset() {
         incidentService.reset();

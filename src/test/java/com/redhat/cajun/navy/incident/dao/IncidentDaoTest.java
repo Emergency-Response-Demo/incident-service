@@ -285,4 +285,103 @@ public class IncidentDaoTest {
             return null;
         });
     }
+
+    @Test
+    @Transactional
+    public void testFindIncidentByName() {
+        //end the current transaction
+        TestTransaction.end();
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            incidentDao.deleteAll();
+            return null;
+        });
+
+        Incident incident1 = new Incident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("30.12345")
+                .longitude("-70.98765")
+                .numberOfPeople(3)
+                .medicalNeeded(false)
+                .victimName("John Doe")
+                .victimPhoneNumber("123-456-789")
+                .status("REPORTED")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+        Incident incident2 = new Incident.Builder()
+                .incidentId(UUID.randomUUID().toString())
+                .latitude("35.12345")
+                .longitude("-75.98765")
+                .numberOfPeople(4)
+                .medicalNeeded(false)
+                .victimName("John Foo")
+                .victimPhoneNumber("123-456-789")
+                .status("ASSIGNED")
+                .reportedTime(System.currentTimeMillis())
+                .build();
+
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            incidentDao.create(incident1);
+            incidentDao.create(incident2);
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("John Foo");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("%Foo");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("%foo");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("%Fo%");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("%Foo%");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(1));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("John%");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(2));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("john%");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(2));
+            return null;
+        });
+
+        new TransactionTemplate(transactionManager).execute(s -> {
+            List<Incident> result = incidentDao.findByName("Peter%");
+            assertThat(result, notNullValue());
+            assertThat(result.size(), equalTo(0));
+            return null;
+        });
+    }
 }
