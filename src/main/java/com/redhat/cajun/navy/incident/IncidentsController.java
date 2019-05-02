@@ -47,8 +47,8 @@ public class IncidentsController {
         }
     }
 
-    @RequestMapping(value = "/byname/{name}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Incident>> incidentsByName(@PathVariable String name) {
+    @RequestMapping(value = "/victim/byname/{name}", method = RequestMethod.GET, produces = MimeTypeUtils.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Incident>> incidentsByVictimName(@PathVariable String name) {
         return new ResponseEntity<>(incidentService.incidentsByName(name), HttpStatus.OK);
     }
 
