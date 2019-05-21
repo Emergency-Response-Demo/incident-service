@@ -15,7 +15,7 @@ import javax.persistence.Version;
 
 @Entity
 @Access(AccessType.FIELD)
-@SequenceGenerator(name="ReportedIncidentSeq", sequenceName="REPORTED_INCIDENT_SEQ")
+@SequenceGenerator(name="ReportedIncidentSeq", sequenceName="REPORTED_INCIDENT_SEQ", allocationSize = 10)
 @Table(name = "reported_incident")
 public class Incident {
 
