@@ -3,7 +3,6 @@ package com.redhat.cajun.navy.incident.dao;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import com.redhat.cajun.navy.incident.entity.Incident;
 import org.springframework.stereotype.Component;
@@ -18,12 +17,11 @@ public class IncidentDao {
         entityManager.persist(incident);
     }
 
-    @SuppressWarnings("unchecked")
     public Incident findByIncidentId(String incidentId) {
         if (incidentId == null || incidentId.isEmpty()) {
             return null;
         }
-        List<Incident> incidents = entityManager.createQuery("SELECT r FROM Incident r WHERE r.incidentId = :incidentId")
+        List<Incident> incidents = entityManager.createNamedQuery("Incident.byIncidentId", Incident.class)
                 .setParameter("incidentId", incidentId)
                 .getResultList();
         if (incidents.isEmpty()) {
@@ -38,26 +36,22 @@ public class IncidentDao {
         return r;
     }
 
-    @SuppressWarnings("unchecked")
     public List<Incident> findAll() {
-        return entityManager.createQuery("SELECT r from Incident r").getResultList();
+        return entityManager.createNamedQuery("Incident.findAll", Incident.class).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     public List<Incident> findByStatus(String status) {
-        return entityManager.createQuery("SELECT r from Incident r WHERE r.status = :status")
+        return entityManager.createNamedQuery("Incident.byStatus", Incident.class)
                 .setParameter("status", status.toUpperCase()).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     public List<Incident> findByName(String pattern) {
-        return entityManager.createQuery("SELECT i from Incident i WHERE LOWER(i.victimName) LIKE :pattern")
+        return entityManager.createNamedQuery("Incident.findByName", Incident.class)
                 .setParameter("pattern", pattern.toLowerCase()).getResultList();
     }
 
     public void deleteAll() {
-        Query deleteAll = entityManager.createQuery("DELETE FROM Incident");
-        deleteAll.executeUpdate();
+        entityManager.createNamedQuery("Incident.deleteAll").executeUpdate();
     }
 
 }
