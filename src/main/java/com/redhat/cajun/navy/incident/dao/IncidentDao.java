@@ -13,8 +13,9 @@ public class IncidentDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public void create(Incident incident) {
+    public Incident create(Incident incident) {
         entityManager.persist(incident);
+        return incident;
     }
 
     public Incident findByIncidentId(String incidentId) {
