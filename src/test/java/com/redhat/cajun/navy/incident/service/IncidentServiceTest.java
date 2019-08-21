@@ -23,13 +23,14 @@ import java.util.List;
 import com.redhat.cajun.navy.incident.dao.IncidentDao;
 import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
 import com.redhat.cajun.navy.incident.message.Message;
-import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import com.redhat.cajun.navy.incident.model.Incident;
+import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.stubbing.Answer;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.util.concurrent.ListenableFuture;
 
@@ -62,7 +63,7 @@ public class IncidentServiceTest {
     }
 
     @Test
-    public void testSendIncidentReportEventMessage() {
+    public void testCreateIncident() {
 
         Incident incident = new Incident.Builder()
                 .lat("30.12345")
@@ -72,8 +73,14 @@ public class IncidentServiceTest {
                 .victimName("John Doe")
                 .victimPhoneNumber("123-456-789")
                 .build();
+        
+        when(incidentDao.create(any(com.redhat.cajun.navy.incident.entity.Incident.class))).thenAnswer((Answer<com.redhat.cajun.navy.incident.entity.Incident>) invocation -> {
+            com.redhat.cajun.navy.incident.entity.Incident entity = invocation.getArgument(0);
+            setField(entity, "id", 100, null);
+            return entity;
+        });
 
-        service.sendIncidentReportedEventMessage(incident);
+        service.create(incident);
 
         verify(incidentDao).create(entityCaptor.capture());
         com.redhat.cajun.navy.incident.entity.Incident entity = entityCaptor.getValue();

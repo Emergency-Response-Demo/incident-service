@@ -48,7 +48,7 @@ public class Incident {
         return victimPhoneNumber;
     }
 
-    public long getTimestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
