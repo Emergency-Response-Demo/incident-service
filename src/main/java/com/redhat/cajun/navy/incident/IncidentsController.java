@@ -23,7 +23,7 @@ public class IncidentsController {
 
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity reportIncident(@RequestBody Incident incident) {
-        incidentService.sendIncidentReportedEventMessage(incident);
+        incidentService.create(incident);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

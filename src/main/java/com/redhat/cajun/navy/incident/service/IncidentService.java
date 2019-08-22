@@ -35,33 +35,17 @@ public class IncidentService {
     private String destination;
 
     @Transactional
-    public void sendIncidentReportedEventMessage(Incident incident) {
+    public Incident create(Incident incident) {
 
-        String reportedIncidentId = UUID.randomUUID().toString();
-        long reportedTimestamp = System.currentTimeMillis();
-
-        com.redhat.cajun.navy.incident.entity.Incident incidentEntity =
-                new com.redhat.cajun.navy.incident.entity.Incident.Builder()
-                        .incidentId(reportedIncidentId)
-                        .latitude(incident.getLat())
-                        .longitude(incident.getLon())
-                        .medicalNeeded(incident.isMedicalNeeded())
-                        .numberOfPeople(incident.getNumberOfPeople())
-                        .victimName(incident.getVictimName())
-                        .victimPhoneNumber(incident.getVictimPhoneNumber())
-                        .reportedTime(reportedTimestamp)
-                        .status(IncidentStatus.REPORTED.name())
-                        .build();
-
-        incidentDao.create(incidentEntity);
+        com.redhat.cajun.navy.incident.entity.Incident created = incidentDao.create(toEntity(incident));
 
         Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                new IncidentReportedEvent.Builder(reportedIncidentId)
+                new IncidentReportedEvent.Builder(created.getIncidentId())
                         .lat(new BigDecimal(incident.getLat()))
                         .lon(new BigDecimal(incident.getLon()))
                         .medicalNeeded(incident.isMedicalNeeded())
                         .numberOfPeople(incident.getNumberOfPeople())
-                        .timestamp(reportedTimestamp)
+                        .timestamp(created.getTimestamp())
                         .build())
                 .build();
 
@@ -70,10 +54,12 @@ public class IncidentService {
                 result -> log.debug("Sent 'IncidentReportedEvent' message for incident " + message.getBody().getId()),
                 ex -> log.error("Error sending 'IncidentReportedEvent' message for incident " + message.getBody().getId(), ex));
 
+        return fromEntity(created);
     }
 
+    @Transactional
     public Incident getIncident(String incidentId){
-        return to(incidentDao.findByIncidentId(incidentId));
+        return fromEntity(incidentDao.findByIncidentId(incidentId));
     }
 
     @Transactional
@@ -83,7 +69,7 @@ public class IncidentService {
             log.warn("Incident with id '" + incident.getId() + "' not found in the database");
             return;
         }
-        com.redhat.cajun.navy.incident.entity.Incident toUpdate = from(incident, current);
+        com.redhat.cajun.navy.incident.entity.Incident toUpdate = toEntity(incident, current);
         try {
             incidentDao.merge(toUpdate);
         } catch (Exception e) {
@@ -93,23 +79,17 @@ public class IncidentService {
 
     @Transactional
     public List<Incident> incidents() {
-
-        return incidentDao.findAll().stream().map(this::to).collect(Collectors.toList());
-
+        return incidentDao.findAll().stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
     public List<Incident> incidentsByStatus(String status) {
-
-        return incidentDao.findByStatus(status).stream().map(this::to).collect(Collectors.toList());
-
+        return incidentDao.findByStatus(status).stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
     public List<Incident> incidentsByName(String name) {
-
-        return incidentDao.findByName(name).stream().map(this::to).collect(Collectors.toList());
-
+        return incidentDao.findByName(name).stream().map(this::fromEntity).collect(Collectors.toList());
     }
 
     @Transactional
@@ -117,7 +97,26 @@ public class IncidentService {
         incidentDao.deleteAll();
     }
 
-    private com.redhat.cajun.navy.incident.entity.Incident from(Incident incident, com.redhat.cajun.navy.incident.entity.Incident current) {
+    private com.redhat.cajun.navy.incident.entity.Incident toEntity(Incident incident) {
+
+        String incidentId = UUID.randomUUID().toString();
+        long reportedTimestamp = System.currentTimeMillis();
+
+        return new com.redhat.cajun.navy.incident.entity.Incident.Builder()
+                .incidentId(incidentId)
+                .latitude(incident.getLat())
+                .longitude(incident.getLon())
+                .medicalNeeded(incident.isMedicalNeeded())
+                .numberOfPeople(incident.getNumberOfPeople())
+                .victimName(incident.getVictimName())
+                .victimPhoneNumber(incident.getVictimPhoneNumber())
+                .reportedTime(reportedTimestamp)
+                .status(IncidentStatus.REPORTED.name())
+                .build();
+    }
+
+    private com.redhat.cajun.navy.incident.entity.Incident toEntity(Incident incident, com.redhat.cajun.navy.incident.entity.Incident current) {
+
         if (incident == null) {
             return null;
         }
@@ -134,12 +133,11 @@ public class IncidentService {
                 .build();
     }
 
-    private Incident to(com.redhat.cajun.navy.incident.entity.Incident r) {
+    private Incident fromEntity(com.redhat.cajun.navy.incident.entity.Incident r) {
 
         if (r == null) {
             return null;
         }
-
         return new Incident.Builder(r.getIncidentId())
                 .lat(r.getLatitude())
                 .lon(r.getLongitude())
@@ -151,5 +149,4 @@ public class IncidentService {
                 .timestamp(r.getTimestamp())
                 .build();
     }
-
 }
