@@ -4,4 +4,4 @@ ENV JAVA_APP_DIR=/deployments
 
 EXPOSE 8080 8443
 
-COPY target/incident-service-1.0.0-SNAPSHOT.jar /deployments/
+COPY target/incident-service-1.0.0.Final.jar /deployments/
