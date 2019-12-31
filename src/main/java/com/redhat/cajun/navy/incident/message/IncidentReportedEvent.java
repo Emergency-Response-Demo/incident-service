@@ -16,6 +16,12 @@ public class IncidentReportedEvent {
 
     private long timestamp;
 
+    private String victimName;
+
+    private String victimPhoneNumber;
+
+    private String status;
+
     public String getId() {
         return id;
     }
@@ -38,6 +44,18 @@ public class IncidentReportedEvent {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String getVictimName() {
+        return victimName;
+    }
+
+    public String getVictimPhoneNumber() {
+        return victimPhoneNumber;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public static class Builder {
@@ -71,6 +89,21 @@ public class IncidentReportedEvent {
 
         public Builder timestamp(long timestamp) {
             ire.timestamp = timestamp;
+            return this;
+        }
+
+        public Builder victimName(String victimName) {
+            ire.victimName = victimName;
+            return this;
+        }
+
+        public Builder victimPhoneNumber(String victimPhoneNumber) {
+            ire.victimPhoneNumber = victimPhoneNumber;
+            return this;
+        }
+
+        public Builder status(String status) {
+            ire.status = status;
             return this;
         }
 
