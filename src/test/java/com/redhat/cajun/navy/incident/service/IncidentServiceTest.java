@@ -108,6 +108,9 @@ public class IncidentServiceTest {
         assertThat(event.getNumberOfPeople(), equalTo(incident.getNumberOfPeople()));
         assertThat(event.isMedicalNeeded(), equalTo(incident.isMedicalNeeded()));
         assertThat(event.getTimestamp(), equalTo(entity.getTimestamp()));
+        assertThat(event.getVictimName(), equalTo("John Doe"));
+        assertThat(event.getVictimPhoneNumber(), equalTo("123-456-789"));
+        assertThat(event.getStatus(), equalTo("REPORTED"));
     }
 
     @Test

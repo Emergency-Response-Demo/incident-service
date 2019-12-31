@@ -98,6 +98,9 @@ public class IncidentsControllerIT {
         assertThat(event.getNumberOfPeople(), equalTo(3));
         assertThat(event.isMedicalNeeded(), equalTo(true));
         assertThat(event.getTimestamp() <= System.currentTimeMillis(), is(true));
+        assertThat(event.getVictimName(), equalTo("victim"));
+        assertThat(event.getVictimPhoneNumber(), equalTo("111-111-111"));
+        assertThat(event.getStatus(), equalTo("REPORTED"));
 
         Incident incidentEntity = incidentDao.findByIncidentId(key.getValue());
         assertThat(incidentEntity, notNullValue());

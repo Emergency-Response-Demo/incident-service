@@ -46,6 +46,9 @@ public class IncidentService {
                         .medicalNeeded(incident.isMedicalNeeded())
                         .numberOfPeople(incident.getNumberOfPeople())
                         .timestamp(created.getTimestamp())
+                        .victimName(incident.getVictimName())
+                        .victimPhoneNumber(incident.getVictimPhoneNumber())
+                        .status(created.getStatus())
                         .build())
                 .build();
 
