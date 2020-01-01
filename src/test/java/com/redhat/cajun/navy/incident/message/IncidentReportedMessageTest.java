@@ -9,13 +9,11 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 public class IncidentReportedMessageTest {
 
-
-
     @Test
     public void testIncidentReportedMessageSerializationTest() {
 
-        Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                new IncidentReportedEvent.Builder("qwertyuiop")
+        Message<IncidentEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
+                new IncidentEvent.Builder("qwertyuiop")
                         .lat(new BigDecimal("34.1234"))
                         .lon(new BigDecimal("-77.9876"))
                         .medicalNeeded(true)
@@ -45,7 +43,7 @@ public class IncidentReportedMessageTest {
                 "}" +
                 "}";
 
-        JsonSerializer<Message<IncidentReportedEvent>> serializer = new JsonSerializer<>();
+        JsonSerializer<Message<IncidentEvent>> serializer = new JsonSerializer<>();
         byte[] serialized = serializer.serialize("test", message);
         MatcherAssert.assertThat(serialized, CoreMatchers.notNullValue());
         String serializedAsString = new String(serialized);

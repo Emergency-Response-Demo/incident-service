@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.redhat.cajun.navy.incident.dao.IncidentDao;
-import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
+import com.redhat.cajun.navy.incident.message.IncidentEvent;
 import com.redhat.cajun.navy.incident.message.Message;
 import com.redhat.cajun.navy.incident.model.Incident;
 import com.redhat.cajun.navy.incident.model.IncidentStatus;
@@ -46,7 +46,7 @@ public class IncidentServiceTest {
     private ArgumentCaptor<com.redhat.cajun.navy.incident.entity.Incident> entityCaptor;
 
     @Captor
-    private ArgumentCaptor<Message<IncidentReportedEvent>> messageCaptor;
+    private ArgumentCaptor<Message<IncidentEvent>> messageCaptor;
 
     private IncidentService service;
 
@@ -57,7 +57,8 @@ public class IncidentServiceTest {
         service = new IncidentService();
         setField(service, null, kafkaTemplate, KafkaTemplate.class);
         setField(service, null, incidentDao, IncidentDao.class);
-        setField(service, "destination", "test-topic", String.class);
+        setField(service, "reportedDestination", "reported-topic", String.class);
+        setField(service, "updatedDestination", "updated-topic", String.class);
         ListenableFuture future = mock(ListenableFuture.class);
         when(kafkaTemplate.send(anyString(), anyString(), any())).thenReturn(future);
     }
@@ -95,12 +96,12 @@ public class IncidentServiceTest {
         assertThat(entity.getTimestamp() <= System.currentTimeMillis(), is(true));
         assertThat(entity.getStatus(), equalTo(IncidentStatus.REPORTED.name()));
 
-        verify(kafkaTemplate).send(eq("test-topic"), eq(incidentId), messageCaptor.capture());
-        Message<IncidentReportedEvent> message = messageCaptor.getValue();
+        verify(kafkaTemplate).send(eq("reported-topic"), eq(incidentId), messageCaptor.capture());
+        Message<IncidentEvent> message = messageCaptor.getValue();
         assertThat(message.getId(), notNullValue());
         assertThat(message.getInvokingService(), equalTo("IncidentService"));
         assertThat(message.getBody(), notNullValue());
-        IncidentReportedEvent event = message.getBody();
+        IncidentEvent event = message.getBody();
         assertThat(event.getId(), notNullValue());
         assertThat(event.getId(), equalTo(incidentId));
         assertThat(event.getLat(), equalTo(new BigDecimal(incident.getLat())));
@@ -161,6 +162,23 @@ public class IncidentServiceTest {
         assertThat(entity.isMedicalNeeded(), equalTo(true));
         assertThat(entity.getReportedTime(), equalTo(current.getReportedTime()));
         assertThat(entity.getStatus(), equalTo("PICKEDUP"));
+
+        verify(kafkaTemplate).send(eq("updated-topic"), eq(updated.getIncidentId()), messageCaptor.capture());
+        Message<IncidentEvent> message = messageCaptor.getValue();
+        assertThat(message.getId(), notNullValue());
+        assertThat(message.getInvokingService(), equalTo("IncidentService"));
+        assertThat(message.getBody(), notNullValue());
+        IncidentEvent event = message.getBody();
+        assertThat(event.getId(), notNullValue());
+        assertThat(event.getId(), equalTo("testId"));
+        assertThat(event.getLat(), equalTo(new BigDecimal("30.12345")));
+        assertThat(event.getLon(), equalTo(new BigDecimal("-77.98765")));
+        assertThat(event.getNumberOfPeople(), equalTo(2));
+        assertThat(event.isMedicalNeeded(), equalTo(true));
+        assertThat(event.getTimestamp(), equalTo(updated.getTimestamp()));
+        assertThat(event.getVictimName(), equalTo("John Doe"));
+        assertThat(event.getVictimPhoneNumber(), equalTo("111-222-333"));
+        assertThat(event.getStatus(), equalTo("PICKEDUP"));
 
     }
 
