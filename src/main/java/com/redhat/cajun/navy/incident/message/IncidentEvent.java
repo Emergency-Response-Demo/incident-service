@@ -2,7 +2,7 @@ package com.redhat.cajun.navy.incident.message;
 
 import java.math.BigDecimal;
 
-public class IncidentReportedEvent {
+public class IncidentEvent {
 
     private String id;
 
@@ -60,10 +60,10 @@ public class IncidentReportedEvent {
 
     public static class Builder {
 
-        private IncidentReportedEvent ire;
+        private IncidentEvent ire;
 
         public Builder(String id) {
-            ire = new IncidentReportedEvent();
+            ire = new IncidentEvent();
             ire.id = id;
         }
 
@@ -107,7 +107,7 @@ public class IncidentReportedEvent {
             return this;
         }
 
-        public IncidentReportedEvent build() {
+        public IncidentEvent build() {
             return ire;
         }
     }

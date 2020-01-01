@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.redhat.cajun.navy.incident.dao.IncidentDao;
-import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
+import com.redhat.cajun.navy.incident.message.IncidentEvent;
 import com.redhat.cajun.navy.incident.message.Message;
 import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import com.redhat.cajun.navy.incident.model.Incident;
@@ -32,15 +32,18 @@ public class IncidentService {
     private IncidentDao incidentDao;
 
     @Value("${sender.destination.incident-reported-event}")
-    private String destination;
+    private String reportedDestination;
+
+    @Value("${sender.destination.incident-updated-event}")
+    private String updatedDestination;
 
     @Transactional
     public Incident create(Incident incident) {
 
         com.redhat.cajun.navy.incident.entity.Incident created = incidentDao.create(toEntity(incident));
 
-        Message<IncidentReportedEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
-                new IncidentReportedEvent.Builder(created.getIncidentId())
+        Message<IncidentEvent> message = new Message.Builder<>("IncidentReportedEvent", "IncidentService",
+                new IncidentEvent.Builder(created.getIncidentId())
                         .lat(new BigDecimal(incident.getLat()))
                         .lon(new BigDecimal(incident.getLon()))
                         .medicalNeeded(incident.isMedicalNeeded())
@@ -52,7 +55,7 @@ public class IncidentService {
                         .build())
                 .build();
 
-        ListenableFuture<SendResult<String, Message<?>>> future = kafkaTemplate.send(destination, message.getBody().getId(), message);
+        ListenableFuture<SendResult<String, Message<?>>> future = kafkaTemplate.send(reportedDestination, message.getBody().getId(), message);
         future.addCallback(
                 result -> log.debug("Sent 'IncidentReportedEvent' message for incident " + message.getBody().getId()),
                 ex -> log.error("Error sending 'IncidentReportedEvent' message for incident " + message.getBody().getId(), ex));
@@ -73,10 +76,30 @@ public class IncidentService {
             return;
         }
         com.redhat.cajun.navy.incident.entity.Incident toUpdate = toEntity(incident, current);
+        com.redhat.cajun.navy.incident.entity.Incident merged = null;
         try {
-            incidentDao.merge(toUpdate);
+            merged = incidentDao.merge(toUpdate);
         } catch (Exception e) {
             log.warn("Exception '" + e.getClass() + "' when updating Incident with id '" + incident.getId() + "'. Incident record is not updated.");
+        }
+        if (merged != null) {
+            Message<IncidentEvent> message = new Message.Builder<>("IncidentUpdatedEvent", "IncidentService",
+                    new IncidentEvent.Builder(merged.getIncidentId())
+                            .lat(new BigDecimal(merged.getLatitude()))
+                            .lon(new BigDecimal(merged.getLongitude()))
+                            .medicalNeeded(merged.isMedicalNeeded())
+                            .numberOfPeople(merged.getNumberOfPeople())
+                            .timestamp(merged.getTimestamp())
+                            .victimName(merged.getVictimName())
+                            .victimPhoneNumber(merged.getVictimPhoneNumber())
+                            .status(merged.getStatus())
+                            .build())
+                    .build();
+
+            ListenableFuture<SendResult<String, Message<?>>> future = kafkaTemplate.send(updatedDestination, message.getBody().getId(), message);
+            future.addCallback(
+                    result -> log.debug("Sent 'IncidentUpdatedEvent' message for incident " + message.getBody().getId()),
+                    ex -> log.error("Error sending 'IncidentUpdatedEvent' message for incident " + message.getBody().getId(), ex));
         }
     }
 

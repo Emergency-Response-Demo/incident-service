@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import com.redhat.cajun.navy.incident.dao.IncidentDao;
 import com.redhat.cajun.navy.incident.entity.Incident;
 import com.redhat.cajun.navy.incident.listener.UpdateIncidentCommandListener;
-import com.redhat.cajun.navy.incident.message.IncidentReportedEvent;
+import com.redhat.cajun.navy.incident.message.IncidentEvent;
 import com.redhat.cajun.navy.incident.message.Message;
 import io.restassured.RestAssured;
 import io.restassured.http.Header;
@@ -53,7 +53,7 @@ public class IncidentsControllerIT {
     private IncidentDao incidentDao;
 
     @Captor
-    private ArgumentCaptor<Message<IncidentReportedEvent>> messageCaptor;
+    private ArgumentCaptor<Message<IncidentEvent>> messageCaptor;
 
     @Captor
     private ArgumentCaptor<String> destination;
@@ -86,11 +86,11 @@ public class IncidentsControllerIT {
         Mockito.verify(kafkaTemplate).send(destination.capture(), key.capture(), messageCaptor.capture());
         assertThat(destination.getValue(), equalTo("topic-foo"));
         assertThat(key.getValue(), notNullValue());
-        Message<IncidentReportedEvent> message = messageCaptor.getValue();
+        Message<IncidentEvent> message = messageCaptor.getValue();
         assertThat(message.getId(), notNullValue());
         assertThat(message.getInvokingService(), equalTo("IncidentService"));
         assertThat(message.getBody(), notNullValue());
-        IncidentReportedEvent event = message.getBody();
+        IncidentEvent event = message.getBody();
         assertThat(event.getId(), notNullValue());
         assertThat(event.getId(), equalTo(key.getValue()));
         assertThat(event.getLat(), equalTo(new BigDecimal("34.14338")));
