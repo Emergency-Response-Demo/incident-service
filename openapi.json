@@ -105,8 +105,20 @@
         },
         "/incidents/{status}": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "status",
+                        "description": "Status to be searched",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
+                        
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -127,8 +139,20 @@
         },
         "/incidents/victim/byname/{name}": {
             "get": {
+                "parameters": [
+                    {
+                        "name": "name",
+                        "description": "Name to be searched",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
+                        
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -138,7 +162,8 @@
                                     }
                                 }
                             }
-                        }
+                        },
+                        "description": "Victim's name"
                     }
                 },
                 "operationId": "getIncidentsByVictimName",
@@ -149,7 +174,9 @@
         "/reset": {
             "post": {
                 "responses": {
-                    "200": {}
+                    "200": {
+                        "description": "Reset done."
+                    }
                 },
                 "operationId": "reset",
                 "summary": "Reset the incident database.",
