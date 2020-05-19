@@ -13,6 +13,7 @@ import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -29,6 +30,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class IncidentDaoTest {
 
     @Autowired
+    @Qualifier("delegate")
     private IncidentDao incidentDao;
 
     @Autowired
