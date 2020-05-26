@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.redhat.cajun.navy.incident.dao.IIncidentDao;
 import com.redhat.cajun.navy.incident.dao.IncidentDao;
 import com.redhat.cajun.navy.incident.message.IncidentEvent;
 import com.redhat.cajun.navy.incident.message.Message;
@@ -56,7 +57,7 @@ public class IncidentServiceTest {
         initMocks(this);
         service = new IncidentService();
         setField(service, null, kafkaTemplate, KafkaTemplate.class);
-        setField(service, null, incidentDao, IncidentDao.class);
+        setField(service, null, incidentDao, IIncidentDao.class);
         setField(service, "reportedDestination", "reported-topic", String.class);
         setField(service, "updatedDestination", "updated-topic", String.class);
         ListenableFuture future = mock(ListenableFuture.class);

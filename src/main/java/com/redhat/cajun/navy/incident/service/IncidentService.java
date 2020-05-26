@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.redhat.cajun.navy.incident.dao.IncidentDao;
+import com.redhat.cajun.navy.incident.dao.IIncidentDao;
 import com.redhat.cajun.navy.incident.message.IncidentEvent;
 import com.redhat.cajun.navy.incident.message.Message;
-import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import com.redhat.cajun.navy.incident.model.Incident;
+import com.redhat.cajun.navy.incident.model.IncidentStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class IncidentService {
     private KafkaTemplate<String, Message<?>> kafkaTemplate;
 
     @Autowired
-    private IncidentDao incidentDao;
+    private IIncidentDao incidentDao;
 
     @Value("${sender.destination.incident-reported-event}")
     private String reportedDestination;

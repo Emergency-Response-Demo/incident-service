@@ -5,10 +5,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.redhat.cajun.navy.incident.entity.Incident;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IncidentDao {
+@Qualifier("delegate")
+public class IncidentDao implements IIncidentDao {
 
     @PersistenceContext
     private EntityManager entityManager;
