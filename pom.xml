@@ -20,7 +20,7 @@
     <version.logback>1.2.3</version.logback>
     <version.json-path>2.4.0</version.json-path>
     <version.rest-assured>3.0.3</version.rest-assured>
-    <version.springfox>2.7.0</version.springfox>
+    <version.springfox>2.10.0</version.springfox>
   </properties>
   <dependencyManagement>
     <dependencies>
